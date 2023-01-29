@@ -1,0 +1,74 @@
+#!/usr/bin/env sh
+#YABAI STUFF
+
+# binary space partitioning
+yabai -m config layout bsp
+
+# make floating windows always on top
+yabai -m config window_topmost on
+
+## Change how yabai looks
+yabai -m config top_padding 4
+yabai -m config bottom_padding 8
+yabai -m config left_padding 12
+yabai -m config right_padding 12
+yabai -m config window_gap 10
+
+# custom space names
+#yabai -m space 1 --label one
+#yabai -m space 2 --label two
+#yabai -m space 3 --label three
+#yabai -m space 4 --label four
+#yabai -m space 5 --label five
+#yabai -m space 6 --label six
+#yabai -m space 9 --label nine
+
+# Disable layout for some apps - as a rule we want these "always on top"
+yabai -m rule --add app="^1Password" manage=off sticky=on layer=above
+yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Alfred Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="Bartender" sticky=on layer=above manage=off
+# yabai -m rule --add app="^console$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Fantastical$" sticky=on layer=above manage=off
+# yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Karabiner-Elements$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Karabiner-EventViewer$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Messages$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Music$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Photo Booth$" sticky=on layer=above manage=off
+yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Things$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Wally$" sticky=on layer=above manage=off
+yabai -m rule --add app="iStat" sticky=on layer=above manage=off
+
+## Some random global settings
+# New window spawns to the right if vertical split, or bottom if horizontal split
+yabai -m config window_placement second_child
+yabai -m config window_topmost on
+
+## Default - Have not disabled SIP, so cant use the window_border
+yabai -m config window_border off
+
+## some other settings
+yabai -m config auto_balance off
+yabai -m config split_ratio 0.50
+# # set mouse interaction modifier key (default: fn)
+# yabai -m config mouse_modifier ctrl
+# set modifier + right-click drag to resize window (default: resize)
+# yabai -m config mouse_action2 resize
+# set modifier + left-click drag to resize window (default: move)
+# yabai -m config mouse_action1 move
+
+# makes mouse follow the focus
+yabai -m config mouse_follows_focus on
+
+# integration with spacebar
+# https://github.com/cmacrae/spacebar
+SPACEBAR_HEIGHT=$(spacebar -m config height)
+yabai -m config external_bar all:$SPACEBAR_HEIGHT:0
+
+echo "yabai configuration loaded.."
+
+#END

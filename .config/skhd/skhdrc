@@ -1,0 +1,67 @@
+#Yabai (window manager)
+
+## hyper == SHIFT + CMD + CTRL + OPTION
+
+## Restart the yabai launch agent
+hyper - z : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
+
+# float / unfloat window, and centre on screen HYPER+SPACe
+hyper - 0x31 : yabai -m window --toggle float; yabai -m window --grid 18:18:1:1:16:16
+
+### Focus ###
+# Window focus is handled with hyper + right hand keys (centred on VIM homerow hjkl)
+## cycle window focus through all windows/displays
+# hyper - j : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .space, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | nth(index(map(select(.\"has-focus\" == true))) - 1).id")" || yabai -m window --focus first
+# hyper - k : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .space, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | reverse | nth(index(map(select(.\"has-focus\" == true))) - 1).id")" || yabai -m window --focus last
+hyper - h : yabai -m window --focus west || yabai -m window --focus first
+hyper - j : yabai -m window --focus south || yabai -m window --focus first
+hyper - k : yabai -m window --focus north || yabai -m window --focus last
+hyper - l : yabai -m window --focus east || yabai -m window --focus last
+
+# Display focus
+hyper - i : yabai -m display --focus 1 # Focus main display
+hyper - u : yabai -m display --focus $YABAI_LEFT_ONE_DISPLAY_IDX || yabai -m display --focus 1
+hyper - o : yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX || yabai -m display --focus 1
+hyper - y : yabai -m display --focus $YABAI_LEFT_TWO_DISPLAY_IDX || yabai -m display --focus $YABAI_LEFT_ONE_DISPLAY_IDX || yabai -m dispay --focus 1
+hyper - p : yabai -m display --focus $YABAI_RIGHT_TWO_DISPLAY_IDX || yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX || yabai -m display --focus 1
+
+# move windows to display - uses keys above the equivalent display focus key
+# hyper - 8 : move to main display
+hyper - 0x1C : yabai -m window --display 1 && yabai -m display --focus 1
+# hyper - 7 : move to left one
+hyper - 0x1A : yabai -m window --display $YABAI_LEFT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_LEFT_ONE_DISPLAY_IDX
+# hyper - 6 : move to left two
+hyper - 0x16 : yabai -m window --display $YABAI_LEFT_TWO_DISPLAY_IDX && yabai -m display --focus $YABAI_LEFT_TWO_DISPLAY_IDX
+# hyper - 9 / -: move to right one
+hyper - 0x1B : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
+#hyper - 0x1B : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
+# hyper - 0 : move to right two
+hyper - 0x18 : yabai -m window --display $YABAI_RIGHT_TWO_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_TWO_DISPLAY_IDX
+
+### Manipulation ###
+#Manipulating windows/trees is hyper + left hand keys (offset WASD triangle)
+## swap focused window
+hyper - e : yabai -m window --swap north
+hyper - d : yabai -m window --swap south
+hyper - f : yabai -m window --swap east
+hyper - s : yabai -m window --swap west
+
+## Warp focused window into other windows
+hyper - a : yabai -m window --warp west
+hyper - c : yabai -m window --warp south
+hyper - 0x14 : yabai -m window --warp north # hyper - 3
+hyper - g : yabai -m window --warp east
+
+
+## rotate tree 90
+hyper - r : yabai -m space --rotate 90
+
+# toggle split (between horizontal and vertical)
+hyper - w : yabai -m window --toggle split
+
+# tree resizing
+hyper - q : yabai -m window --ratio rel:-0.1
+hyper - t : yabai -m window --ratio rel:0.1
+
+# hyper - tab (underscore) reset resizing
+hyper - 0x30 : yabai -m space --balance
