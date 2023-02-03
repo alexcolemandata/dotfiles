@@ -34,26 +34,11 @@ eval "$(pyenv virtualenv-init -)"
 # PATH
 export PATH=$HOME/bin/:$PATH
 
-# thefuck - rerun a failed command with auto-corrections
+# thef*ck - rerun a failed command with auto-corrections
 # (handy for git push!)
 eval $(thefuck --alias)
-eval $(thefuck --alias yikes)
+eval $(thefuck --alias yikes) # PG version 
 
-# VI-Mode
-bindkey -v
-export KEYTIMEOUT=1
-
-
-# plugins
-# improved vi-mode
-source $ZSH/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
-
-# plugin config
-# used for spacebar
-function set_win_title(){
-    echo -ne "\033]0; $(basename "$PWD") \007"
-}
-starship_precmd_user_func="set_win_title"
 
 # DOCKER
 # get environment variable from inside a container
@@ -73,11 +58,6 @@ alias ds="d_shell"
 # get the mapped HOST_PORT from the container
 d_luigi_port () {
     d_env $1 LUIGI_HOST_PORT
-}
-
-# gets the YAML_PATH defined in app/.env
-d_luigi_yaml_path () {
-    docker exec $1 grep -v '^#' /home/dev/.env | grep -e "YAML_PATH" | sed -e 's/.*=//'
 }
 
 # runs the luigi module then opens the dashboard in firefox
@@ -146,13 +126,18 @@ alias cr="change_repo"
 #bindkey -M menuselect 'j' vi-down-line-or-history
 #bindkey -v '^?' backward-delete-char
 
-source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+# VI-Mode
+bindkey -v
+export KEYTIMEOUT=1
+
+# plugins
+# improved vi-mode
+source $ZSH/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+
+
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $ZSH/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 fpath=($ZSH/plugins/zsh-completions/src $fpath)
 
 export ZSH_AUTOSUGGEST_STRATEGY=(completion history)
-
-
-# starship!
-eval "$(starship init zsh)"
+source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
