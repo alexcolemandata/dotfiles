@@ -112,20 +112,6 @@ change_repo () {
 
 alias cr="change_repo"
 
-# --- Auto Completion ---
-#autoload -Uz compinit
-#zstyle ':completion:*' menu select
-# zmodload zsh/complist
-#compinit
-#_comp_options+=(globdots)
-
-# use vim keys for tab complete menu
-# bindkey -M menuselect 'h' vi-backward-char
-#bindkey -M menuselect 'k' vi-up-line-or-history
-#bindkey -M menuselect 'l' vi-forward-char
-#bindkey -M menuselect 'j' vi-down-line-or-history
-#bindkey -v '^?' backward-delete-char
-
 # VI-Mode
 bindkey -v
 export KEYTIMEOUT=1
@@ -135,9 +121,7 @@ export KEYTIMEOUT=1
 source $ZSH/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
 
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $ZSH/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-fpath=($ZSH/plugins/zsh-completions/src $fpath)
 
-export ZSH_AUTOSUGGEST_STRATEGY=(completion history)
 source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
