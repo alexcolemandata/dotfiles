@@ -4,6 +4,7 @@ local settings = {
     -- general ui stuff
     termguicolors = true,
     cmdheight = 1,
+    colorcolumn = '80',
     cursorline = true,
     showmode = false, -- mode is shown with lualine
     --completeopt = { "menuone", "noselect" },
@@ -38,7 +39,6 @@ local settings = {
     splitbelow = true,
     -- 
     --mouse = "a", -- enable mouse
-
 }
 
 vim.opt.shortmess:append "c"

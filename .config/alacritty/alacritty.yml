@@ -4,6 +4,7 @@ window:
     y: 12
   decorations: buttonless
   opacity: 0.90
+  # opacity: 1
   startup_mode: Windowed
   dynamic_title: true
 

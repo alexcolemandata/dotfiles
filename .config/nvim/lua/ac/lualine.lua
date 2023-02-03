@@ -29,7 +29,7 @@ end
 local buffer_opts = {
                 "buffers",
                 icons_enabled = false,
-                max_length = vim.o.columns * 0.9,
+                max_length = vim.o.columns * 4 / 5,
                 mode=0,
                 buffers_color = {
                   --active = 'lualine_a_insert',
@@ -83,9 +83,6 @@ local function component_repo_or_dir()
     return vim.api.nvim_buf_get_var(0, "repo_or_dir")
 end
 
-local function is_netrw()
-    return vim.bo.filetype == 'netrw'
-end
 
 local function not_netrw()
     return vim.bo.filetype ~= 'netrw'
