@@ -2,13 +2,14 @@ export ZSH=$HOME/.zsh
 
 ## history ##
 export HISTFILE=$ZSH/.zsh_history
-export HISTSIZE=10000
-export SAVEHIST=10000
+export HISTSIZE=1000000
+export SAVEHIST=1000000
 export HISTTIMEFORMAT="[%F %T] "
+
 setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_FIND_NO_DUPS
-setopt INC_APPEND_HISTORY
-setopt EXTENDED_HISTORY
+setopt HIST_FIND_NO_DUPS  # dont show duplicate commands
+setopt INC_APPEND_HISTORY # add to history immediately
+setopt EXTENDED_HISTORY   # add timestamp to to history
 
 # PYENV configuration
 alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
