@@ -117,28 +117,30 @@ bindkey -v
 export KEYTIMEOUT=1
 
 # custom prompt
-
+source ~/.zsh/plugins/gitstatus/gitstatus.prompt.zsh
 #PROMPTY GLYPHS, OR GLYPHY PROMPTS?
 # 🤖 ﴝ  ﴔ  ﴀ  ﳳ 逸 諸 履
 # ﳟ  ﳀ  ﲰ ﲲ  ﲭ  ﲖ  ﲎ    ﬙
 # ﲊ  ﲃ  ﱲ ﱿ  ﱪ  ﱫ  ﱣ  﫻 﫼
 # ﰳ  ﰴ  ﰧ  ﰉ  ﰊ ﰋ  ﰆ  ﯼ  ﯠ  ﯖ
 # ﯎  ﯈  ﯀  ﮸  ﮭ ﮧ  ﭳ  בֿ  ײַ  ﬍
-export PROMPT_GLYPH="﮸"
+export PROMPT_GLYPH="ﰊ"
 
 setopt prompt_subst
 RPROMPT="%B%F{blue}%T%f%b"
 
 autoload -Uz vcs_info
 precmd() { vcs_info }
+ 
 
-zstyle ':vcs_info:git:*' formats '%b '
+zstyle ':vcs_info:git:*' formats '%F{magenta}%r%f %F{green}%b%f '
 zstyle ':vcs_info:*' enable git
 
 
+# note - powerlevel 10k is apparently quite quick!
 export PROMPT='
-%F{blue}%2~%f 
-%(?.%F{green}$PROMPT_GLYPH%f.%F{red}$PROMPT_GLYPH%f) %  '
+%F{blue}%~%f ${vcs_info_msg_0_}
+%(?.%F{green}$PROMPT_GLYPH%f.%F{red}$PROMPT_GLYPH%f) %'
 
 # plugins
 # improved vi-mode
