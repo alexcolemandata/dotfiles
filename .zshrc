@@ -151,3 +151,4 @@ export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+source $ZSH/plugins/powerlevel10k/powerlevel10k.zsh-theme 
