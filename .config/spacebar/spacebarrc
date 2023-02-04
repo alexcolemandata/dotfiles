@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+#spacebar -m config debug_output on
+
 SPACEBAR_COLOUR_BG='0xa01a1c23'
 
 # green theme
@@ -36,13 +38,19 @@ spacebar -m config clock_icon_color     $SPACEBAR_COLOUR_ICON
 
 spacebar -m config clock                on
 spacebar -m config clock_format         "%Y-%m-%d %H:%M"
-#spacebar -m config clock_icon           
+spacebar -m config clock_icon           
 
-spacebar -m config right_shell          on
-spacebar -m config right_shell_icon_color   $SPACEBAR_COLOUR_ICON
 spacebar -m config right_shell_icon     
-spacebar -m config right_shell_command  "echo $USER"
+spacebar -m config right_shell_icon_color   $SPACEBAR_COLOUR_ICON
+spacebar -m config right_shell_command  "whoami"
+
+spacebar -m config left_shell_icon     ' '
+spacebar -m config left_shell_icon_color $SPACEBAR_COLOUR_ICON
+spacebar -m config left_shell_command "$HOME/.scripts/timew_now.sh"
 
 spacebar -m config power                off
 
-echo "spacebar configuration loaded.."
+# need to do this hack to avoid the shell locking up the config
+(spacebar -m config left_shell on) &
+(spacebar -m config right_shell on) &
+
