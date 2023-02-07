@@ -123,6 +123,18 @@ alias cr="change_repo"
 bindkey -v
 export KEYTIMEOUT=1
 
+
+# TIMEWarrior - send command to timewarrior 
+# and force an update to sketchybar (otherwise the 
+# module takes a bit to register start/stop)
+# `tw`
+timew_update_sketchybar () {
+    timew "${@}"
+    sketchybar --update
+}
+
+alias tw=timew_update_sketchybar
+
 # custom prompt
 source ~/.zsh/plugins/gitstatus/gitstatus.prompt.zsh
 #PROMPTY GLYPHS, OR GLYPHY PROMPTS?
@@ -138,7 +150,6 @@ RPROMPT="%B%F{blue}%T%f%b"
 
 autoload -Uz vcs_info
 precmd() { vcs_info }
- 
 
 zstyle ':vcs_info:git:*' formats '%F{magenta}%r%f %F{green}%b%f '
 zstyle ':vcs_info:*' enable git

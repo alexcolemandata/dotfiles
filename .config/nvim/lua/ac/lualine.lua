@@ -2,8 +2,6 @@ local status_ok, lualine = pcall(require, "lualine")
 if not status_ok then
     vim.notify("lualine not detected - skipping config")
     return
-else
-    vim.notify("configuring lualine")
 end
 
 local branch_formatting = {}

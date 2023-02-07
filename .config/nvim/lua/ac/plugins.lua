@@ -1,5 +1,3 @@
-print("loading plugins")
-
 -- Packer Bootstrap
 local fn = vim.fn
 local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -56,6 +54,8 @@ return require('packer').startup(function(use)
   use 'lukas-reineke/indent-blankline.nvim'
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.0' }
 
+  use 'xiyaowong/nvim-transparent'
+
   -- Tim Pope Plugins --
   use 'tpope/vim-surround'
   -- Syntax Highlighting and Colors --
@@ -64,14 +64,6 @@ return require('packer').startup(function(use)
 
   -- Docstrings
   use 'danymat/neogen'
-
-  -- Markdown Preview
-  use({
-      "iamcco/markdown-preview.nvim",
-      run = function() vim.fn["mkdp#util#install"]() end,
-  })
-
-  use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
 
   -- Colorschemes
   use 'RRethy/nvim-base16'

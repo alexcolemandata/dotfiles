@@ -1,4 +1,3 @@
-vim.notify("applying custom lualine theme")
 local horizon = require("ac.horizon_colours")
 local mode = require("ac.mode_colours")
 

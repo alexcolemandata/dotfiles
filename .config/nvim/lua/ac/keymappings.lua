@@ -1,4 +1,3 @@
-print("loading keymappings")
 local g = vim.g
 
 local opts = { noremap = true, silent = true}

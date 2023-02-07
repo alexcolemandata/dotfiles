@@ -2,8 +2,6 @@ local status_ok, neogen = pcall(require, "neogen")
 if not status_ok then
     vim.notify("neogen not detected - skipping config")
     return
-else
-    vim.notify("configuring neogen")
 end
 
 local opts = { noremap = true, silent = true }

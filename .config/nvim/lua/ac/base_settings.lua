@@ -1,5 +1,3 @@
-print("loading base settings")
-
 local settings = {
     -- general ui stuff
     termguicolors = true,
