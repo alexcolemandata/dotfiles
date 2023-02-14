@@ -5,11 +5,21 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
-SPACEBAR_COLOUR_BG='0xb01a1c23'
-
 # green theme
+SPACEBAR_COLOUR_BG='0x9016161C'
 SPACEBAR_COLOUR_TEXT='0xff09f7a0'
 SPACEBAR_COLOUR_ICON='0xff21bfc2'
+
+# funky theme?
+# SPACEBAR_COLOUR_BG='0xf016161C'
+# SPACEBAR_COLOUR_TEXT='0xffFAB795'
+# SPACEBAR_COLOUR_ICON='0xff29d398'
+
+# blue green
+# SPACEBAR_COLOUR_BG='0xf016161C'
+# SPACEBAR_COLOUR_TEXT='0xff29d398'
+# SPACEBAR_COLOUR_ICON='0xff3FC4DE'
+
 
 ##### Bar Appearance #####
 # Configuring the general appearance of the bar, these are only some of the

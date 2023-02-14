@@ -18,6 +18,10 @@ setopt HIST_FIND_NO_DUPS  # dont show duplicate commands
 setopt INC_APPEND_HISTORY # add to history immediately
 setopt EXTENDED_HISTORY   # add timestamp to to history
 
+
+# python debuggin
+export PYTHONBREAKPOINT=ipdb.set_trace
+
 # PYENV configuration
 alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
 export PYENV_ROOT="$HOME/.pyenv"

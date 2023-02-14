@@ -12,26 +12,13 @@ export NEOVIDE_FRAME=buttonless
 export SCRIPTS_DIR=$HOME/.scripts
 source $SCRIPTS_DIR/git_repo_and_sub.sh
 
-
 # # yabai window mappings
-# export YABAI_LEFT_ONE_DISPLAY_IDX=2
-# export YABAI_RIGHT_ONE_DISPLAY_IDX=3
-# export YABAI_LEFT_TWO_DISPLAY_IDX=$YABAI_LEFT_ONE_DISPLAY_IDX
-# export YABAI_RIGHT_TWO_DISPLAY_IDX=$YABAI_RIGHT_ONE_DISPLAY_IDX
-
-
-# yabai window mappings - alt
 export YABAI_LEFT_ONE_DISPLAY_IDX=3
 export YABAI_RIGHT_ONE_DISPLAY_IDX=2
+
+
 export YABAI_LEFT_TWO_DISPLAY_IDX=$YABAI_LEFT_ONE_DISPLAY
 export YABAI_RIGHT_TWO_DISPLAY_IDX=$YABAI_RIGHT_ONE_DISPLAY
-
-
-# yabai window mappings - living room
-# export YABAI_LEFT_ONE_DISPLAY_IDX=2
-# export YABAI_LEFT_TWO_DISPLAY_IDX=$YABAI_LEFT_ONE_DISPLAY
-# export YABAI_RIGHT_ONE_DISPLAY=#
-# export YABAI_RIGHT_TWO_DISPLAY=#
 
 
 # Yellow Canary Projects Folder

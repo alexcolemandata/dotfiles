@@ -16,9 +16,6 @@ map('n', '<leader>o', 'o<ESC>')
 map('n', '<leader>O', 'O<ESC>')
 
 
--- saving with ctrl+s
-map('n', '<C-s>', ':w<CR>')
-
 -- emacs in insert mode :D
 map('i', '<C-A>', '<C-O>I')
 map('i', '<C-E>', '<C-O>A')
@@ -41,10 +38,8 @@ map('n', '<leader>s', ':wincmd s<CR>') -- split horizontally
 map('n', '<leader>v', ':wincmd v<CR>') -- split vertically
 map('n', '<leader>=', ':wincmd =<CR>') -- even out splits
 
-
 map('n', '<leader>q', ':wincmd q<CR>') -- close window split
 map('n', '<C-w>', ':Bdelete<CR>') -- close buffer - keep window open
-
 
 -- easier navigating split windows
 map('n', '<C-h>', ':wincmd h<CR>')
