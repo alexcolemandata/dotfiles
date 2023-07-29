@@ -58,9 +58,6 @@ return require('packer').startup(function(use)
 
   -- Tim Pope Plugins --
   use 'tpope/vim-surround'
-  -- Syntax Highlighting and Colors --
-  -- use 'vim-python/python-syntax'
-  -- use 'ap/vim-css-color'
 
   -- Docstrings
   use 'danymat/neogen'
@@ -68,16 +65,7 @@ return require('packer').startup(function(use)
   -- Colorschemes
   use 'RRethy/nvim-base16'
 
-  -- indentation guide
-  -- LSP goodness
-  use "neovim/nvim-lspconfig"
-  use "williamboman/mason.nvim" -- simple to use language server installer
-  use "williamboman/mason-lspconfig.nvim" -- simple to use language server installer
-  use "jose-elias-alvarez/null-ls.nvim"
   use "RRethy/vim-illuminate"
-
-  -- coding helpers
-  use "Vimjas/vim-python-pep8-indent"
 
   -- completion system
   use "hrsh7th/nvim-cmp"
