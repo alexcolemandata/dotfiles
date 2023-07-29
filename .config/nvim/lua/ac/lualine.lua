@@ -27,7 +27,7 @@ end
 local buffer_opts = {
                 "buffers",
                 icons_enabled = false,
-                max_length = vim.o.columns * 4 / 5,
+                --max_length = vim.o.columns * 4 / 5,
                 mode=0,
                 buffers_color = {
                   --active = 'lualine_a_insert',
@@ -64,7 +64,8 @@ local function repo_name()
 end
 
 local function repo_or_dir()
-    if is_inside_repo() then
+    --if is_inside_repo() then
+    if false then
         return ' '..repo_name()
     else
         return ' '..dir_path()
