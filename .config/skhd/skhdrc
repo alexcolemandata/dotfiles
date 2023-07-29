@@ -34,6 +34,7 @@ hyper - 0x1A : yabai -m window --display $YABAI_LEFT_ONE_DISPLAY_IDX && yabai -m
 hyper - 0x16 : yabai -m window --display $YABAI_LEFT_TWO_DISPLAY_IDX && yabai -m display --focus $YABAI_LEFT_TWO_DISPLAY_IDX
 # hyper - 9 / -: move to right one
 hyper - 0x1B : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
+hyper - 9 : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
 #hyper - 0x1B : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
 # hyper - 0 : move to right two
 hyper - 0x18 : yabai -m window --display $YABAI_RIGHT_TWO_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_TWO_DISPLAY_IDX
