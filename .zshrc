@@ -177,3 +177,6 @@ source $ZSH/plugins/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Created by `pipx` on 2023-06-02 05:55:03
+export PATH="$PATH:/Users/alex/.local/bin"
