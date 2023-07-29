@@ -46,8 +46,10 @@ yabai -m rule --add app="^Messages$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Music$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Photo Booth$" sticky=on layer=above manage=off
 yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
+yabai -m rule --add app="^DisplayLink.*$" sticky=on layer=above manage=off
 yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Things$" sticky=on layer=above manage=off
+yabai -m rule --add app="^Stickies$" sticky=on layer=above manage=off
 yabai -m rule --add app="^Wally$" sticky=on layer=above manage=off
 yabai -m rule --add app="iStat" sticky=on layer=above manage=off
 
