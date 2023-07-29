@@ -98,6 +98,8 @@ return require('packer').startup(function(use)
       end,
   }
 
+  use { "lewis6991/gitsigns.nvim" }
+
   -- automatically set up config/install plugins if just installed packer
   if packer_bootstrap then
     require('packer').sync()
