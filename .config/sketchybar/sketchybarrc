@@ -6,7 +6,7 @@
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 # green theme
-SPACEBAR_COLOUR_BG='0x9016161C'
+SPACEBAR_COLOUR_BG='0x4016161C'
 SPACEBAR_COLOUR_TEXT='0xff09f7a0'
 SPACEBAR_COLOUR_ICON='0xff21bfc2'
 
@@ -29,7 +29,7 @@ SPACEBAR_COLOUR_ICON='0xff21bfc2'
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
 sketchybar --bar height=32 \
-                 blur_radius=30   \
+                 blur_radius=15   \
                  position=top     \
                  sticky=on       \
                  padding_left=10  \
