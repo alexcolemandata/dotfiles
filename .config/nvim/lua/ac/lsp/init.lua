@@ -5,4 +5,3 @@ end
 
 require "ac.lsp.mason"
 require("ac.lsp.handlers").setup()
-require "ac.lsp.null-ls"
