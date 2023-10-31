@@ -1,9 +1,11 @@
 #Yabai (window manager)
 
 ## hyper == SHIFT + CMD + CTRL + OPTION
+ctrl - left : yabai -m space --focus prev
+ctrl - right : yabai -m space --focus next
 
 ## Restart the yabai launch agent
-hyper - z : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"
+hyper - z : yabai --restart-service
 
 # float / unfloat window, and centre on screen HYPER+SPACe
 hyper - 0x31 : yabai -m window --toggle float; yabai -m window --grid 18:18:1:1:16:16
@@ -28,13 +30,17 @@ hyper - p : yabai -m display --focus $YABAI_RIGHT_TWO_DISPLAY_IDX || yabai -m di
 # move windows to display - uses keys above the equivalent display focus key
 # hyper - 8 : move to main display
 hyper - 0x1C : yabai -m window --display 1 && yabai -m display --focus 1
+hyper - up : yabai -m window --display 1 && yabai -m display --focus 1
+hyper - down : yabai -m window --display 1 && yabai -m display --focus 1
 # hyper - 7 : move to left one
 hyper - 0x1A : yabai -m window --display $YABAI_LEFT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_LEFT_ONE_DISPLAY_IDX
+hyper - left : yabai -m window --display $YABAI_LEFT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_LEFT_ONE_DISPLAY_IDX
 # hyper - 6 : move to left two
 hyper - 0x16 : yabai -m window --display $YABAI_LEFT_TWO_DISPLAY_IDX && yabai -m display --focus $YABAI_LEFT_TWO_DISPLAY_IDX
 # hyper - 9 / -: move to right one
 hyper - 0x1B : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
 hyper - 9 : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
+hyper - right : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
 #hyper - 0x1B : yabai -m window --display $YABAI_RIGHT_ONE_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_ONE_DISPLAY_IDX
 # hyper - 0 : move to right two
 hyper - 0x18 : yabai -m window --display $YABAI_RIGHT_TWO_DISPLAY_IDX && yabai -m display --focus $YABAI_RIGHT_TWO_DISPLAY_IDX

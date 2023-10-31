@@ -6,7 +6,7 @@
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 # green theme
-SPACEBAR_COLOUR_BG='0x4016161C'
+SPACEBAR_COLOUR_BG='0xA916161C'
 SPACEBAR_COLOUR_TEXT='0xff09f7a0'
 SPACEBAR_COLOUR_ICON='0xff21bfc2'
 
@@ -84,11 +84,6 @@ sketchybar --add item space_separator left                         \
                                  padding_left=10                   \
                                  padding_right=10                  \
                                  label.drawing=off                 \
-                                                                   \
-           --add item front_app left                               \
-           --set front_app       script="$PLUGIN_DIR/front_app.sh" \
-                                 icon.drawing=off                  \
-           --subscribe front_app front_app_switched
 
 ##### Adding Right Items #####
 # In the same way as the left items we can add items to the right side.
@@ -110,11 +105,6 @@ sketchybar --add item clock right                              \
            --set battery script="$PLUGIN_DIR/battery.sh"       \
                          update_freq=120                       \
            --subscribe battery system_woke power_source_change
-
-sketchybar --add item timew right \
-           --set timew update_freq=10 \
-                       icon='' \
-                       script="$PLUGIN_DIR/timew_now.sh"
 
 ##### Finalizing Setup #####
 # The below command is only needed at the end of the initial configuration to

@@ -1,3 +1,5 @@
+-- change cursor colours on mode switch
+
 local horizon = require('ac.horizon_colours')
 
 local mode_colours = {
@@ -8,6 +10,6 @@ local mode_colours = {
     visual = horizon.pink,
     visual_selected = horizon.dull_pink,
     command = horizon.green,
-    }
+}
 
 return mode_colours
