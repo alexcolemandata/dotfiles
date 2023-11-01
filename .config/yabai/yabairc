@@ -78,11 +78,11 @@ yabai -m rule --add app="iStat" sticky=on layer=above manage=off
 ## Some random global settings
 # New window spawns to the right if vertical split, or bottom if horizontal split
 
-## Window Border
-yabai -m config window_border on
-yabai -m config active_window_border_color $HORIZON_BRIGHT_GREEN
-yabai -m config normal_window_border_color '0x20'
-yabai -m config window_border_width 3
+## Window Border, deprecated!
+# yabai -m config window_border on
+# yabai -m config active_window_border_color $HORIZON_BRIGHT_GREEN
+# yabai -m config normal_window_border_color '0x20'
+# yabai -m config window_border_width 3
 
 ## some other settings
 yabai -m config auto_balance off
