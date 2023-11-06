@@ -13,7 +13,7 @@ return {
                     render = "compact",
                     stages = "fade",
                     timeout = 3500,
-                    top_down = false,
+                    top_down = true,
                 })
             end,
         },
