@@ -1,8 +1,8 @@
 #Yabai (window manager)
 
 ## hyper == SHIFT + CMD + CTRL + OPTION
-ctrl - left : yabai -m space --focus prev
-ctrl - right : yabai -m space --focus next
+# ctrl - left : yabai -m space --focus prev
+# ctrl - right : yabai -m space --focus next
 
 ## Restart the yabai launch agent
 hyper - z : yabai --restart-service
