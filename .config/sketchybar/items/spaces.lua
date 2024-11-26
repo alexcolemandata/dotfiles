@@ -5,9 +5,124 @@ local app_icons = require("helpers.app_icons")
 
 local item_order = ""
 
+-- Global table to map aerospace_id to display_id
+local aerospace_to_display_map = {}
+
+-- Constants for main and secondary aerospace IDs
+local main_aerospace_id = nil
+local secondary_aerospace_id = nil
+
+-- Function to get the main aerospace ID
+local function get_main_aerospace_id(callback)
+	sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
+		for aerospace_monitor_id in monitors:gmatch("[^\r\n]+") do
+			sbar.exec(
+				"aerospace list-workspaces --format %{workspace} --monitor " .. aerospace_monitor_id,
+				function(workspaces)
+					-- Check if workspace '1' is in the list
+					if workspaces:match("%f[%d]1%f[%D]") then
+						callback(aerospace_monitor_id)
+					end
+				end
+			)
+		end
+	end)
+end
+
+-- Function to get the secondary aerospace ID
+local function get_secondary_aerospace_id(callback)
+	sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
+		for aerospace_monitor_id in monitors:gmatch("[^\r\n]+") do
+			sbar.exec(
+				"aerospace list-workspaces --format %{workspace} --monitor " .. aerospace_monitor_id,
+				function(workspaces)
+					-- Check if workspace '2' is in the list
+					if workspaces:match("%f[%d]2%f[%D]") then
+						callback(aerospace_monitor_id)
+					end
+				end
+			)
+		end
+	end)
+end
+
+local function get_num_displays(callback)
+	sbar.exec("aerospace list-monitors --count", function(monitor_count)
+		-- Trim whitespace from the result
+		local trimmed_count = monitor_count:match("^%s*(.-)%s*$") -- Removes leading and trailing whitespace
+		-- Use the callback to pass back the trimmed result
+		callback(trimmed_count)
+	end)
+end
+
+-- Function to initialize the display mapping
+local function init_display_mapping()
+	-- Get the number of displays
+	get_num_displays(function(num_displays)
+		num_displays = tonumber(num_displays) -- Convert string to number
+		if num_displays == 1 then
+			-- Only 1 display, trivial mapping
+			main_aerospace_id = 1
+			aerospace_to_display_map[main_aerospace_id] = 1
+			print("Mapping initialized for 1 display:", aerospace_to_display_map)
+			return
+		end
+
+		-- Get the main aerospace ID
+		get_main_aerospace_id(function(main_id)
+			main_aerospace_id = main_id
+			aerospace_to_display_map[main_aerospace_id] = 1
+
+			-- Get the secondary aerospace ID
+			get_secondary_aerospace_id(function(secondary_id)
+				secondary_aerospace_id = secondary_id
+				aerospace_to_display_map[secondary_aerospace_id] = 2
+
+				-- Handle additional displays (if num_displays > 2)
+				if num_displays > 2 then
+					sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
+						for aerospace_monitor_id in monitors:gmatch("[^\r\n]+") do
+							if
+								aerospace_monitor_id ~= main_aerospace_id
+								and aerospace_monitor_id ~= secondary_aerospace_id
+							then
+								aerospace_to_display_map[aerospace_monitor_id] = 3
+							end
+						end
+
+						-- Print the mapping for debugging
+						print("Mapping initialized for multiple displays:")
+						for aerospace_id, display_id in pairs(aerospace_to_display_map) do
+							print("Aerospace ID:", aerospace_id, "-> Display ID:", display_id)
+						end
+					end)
+				else
+					-- Print the mapping for debugging (if only 2 displays)
+					print("Mapping initialized for 2 displays:")
+					for aerospace_id, display_id in pairs(aerospace_to_display_map) do
+						print("Aerospace ID:", aerospace_id, "-> Display ID:", display_id)
+					end
+				end
+			end)
+		end)
+	end)
+end
+
+local function convert_aerospace_display_id(aerospace_display_id)
+	-- if aerospace_display_id is in the mapping, return the mapping, otherwise 1
+	if aerospace_to_display_map[aerospace_display_id] then
+		return aerospace_to_display_map[aerospace_display_id]
+	else
+		return 1
+	end
+end
+
+-- Call the initialization function
+init_display_mapping()
+
 local function handle_space_windows_change(space, space_name)
+	print("handle_space_windows_change space_name: " .. space_name)
 	sbar.exec("aerospace list-windows --format %{app-name} --workspace " .. space_name, function(windows)
-		print(windows)
 		local no_app = true
 		local icon_line = ""
 		for app in windows:gmatch("[^\r\n]+") do
@@ -29,16 +144,29 @@ end
 
 local function handle_aerospace_workspace_change(env, space, space_name, space_bracket)
 	local selected = env.FOCUSED_WORKSPACE == space_name
+	local prev_selected = env.PREV_WORKSPACE == space_name
+
+	if not (selected or prev_selected) then
+		-- dont need to update
+		return
+	end
+
+	if selected then
+		print(space_name .. " selected")
+	else
+		print(space_name .. " prev_selected")
+	end
 
 	space:set({
 		icon = { highlight = selected },
 		label = { highlight = selected },
-		background = { border_color = selected and colors.black or colors.bg2 },
 	})
 
 	space_bracket:set({
 		background = { border_color = selected and colors.grey or colors.bg2 },
 	})
+
+	handle_space_windows_change(space, space_name)
 end
 
 sbar.exec("aerospace list-workspaces --all", function(spaces)
