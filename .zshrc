@@ -29,8 +29,8 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
 # replacing ls and tree
-alias ls="exa -1a --icons --group-directories-first"
-alias tree="exa -1a --icons -T --group-directories-first"
+alias ls="eza -1a --icons --group-directories-first"
+alias tree="eza -1a --icons -T --group-directories-first"
 
 alias reload="exec $SHELL"
 
@@ -126,18 +126,6 @@ alias cr="change_repo"
 # VI-Mode
 bindkey -v
 export KEYTIMEOUT=1
-
-
-# TIMEWarrior - send command to timewarrior 
-# and force an update to sketchybar (otherwise the 
-# module takes a bit to register start/stop)
-# `tw`
-timew_update_sketchybar () {
-    timew "${@}"
-    sketchybar --update
-}
-
-alias tw=timew_update_sketchybar
 
 # custom prompt
 source ~/.zsh/plugins/gitstatus/gitstatus.prompt.zsh
