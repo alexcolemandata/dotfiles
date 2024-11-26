@@ -88,5 +88,4 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 
 		item_order = item_order .. " " .. space.name .. " " .. space_padding.name
 	end
-	sbar.exec("sketchybar --reorder apple " .. item_order .. " front_app")
 end)
