@@ -263,10 +263,6 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			handle_space_windows_change(space, space_name)
 		end)
 
-		--space:subscribe("display_change", function(env)
-		--handle_display_change(env, space, space_name)
-		--end)
-
 		item_order = item_order .. " " .. space.name .. " " .. space_padding.name
 	end
 end)
