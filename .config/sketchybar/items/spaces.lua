@@ -108,6 +108,15 @@ local function init_display_mapping()
 	end)
 end
 
+local function get_aerospace_id_from_display_id(display_id)
+	for aerospace_id, mapped_display_id in pairs(aerospace_to_display_map) do
+		if mapped_display_id == display_id then
+			return aerospace_id
+		end
+	end
+	return nil -- Return nil if no match is found
+end
+
 local function convert_aerospace_display_id(aerospace_display_id)
 	-- if aerospace_display_id is in the mapping, return the mapping, otherwise 1
 	if aerospace_to_display_map[aerospace_display_id] then
@@ -151,12 +160,6 @@ local function handle_aerospace_workspace_change(env, space, space_name, space_b
 		return
 	end
 
-	if selected then
-		print(space_name .. " selected")
-	else
-		print(space_name .. " prev_selected")
-	end
-
 	space:set({
 		icon = { highlight = selected },
 		label = { highlight = selected },
@@ -167,6 +170,33 @@ local function handle_aerospace_workspace_change(env, space, space_name, space_b
 	})
 
 	handle_space_windows_change(space, space_name)
+end
+
+local function handle_display_change(env, space, space_name)
+	print("handle_display_change, space_name: " .. space_name)
+
+	sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
+		for as_monitor_id in monitors:gmatch("[^\r\n]+") do
+			sbar.exec(
+				"aerospace list-workspaces --format %{workspace} --monitor " .. as_monitor_id,
+				function(workspaces)
+					-- Check if workspace is in the list
+					if workspaces:match("%f[%d]" .. space_name .. "%f[%D]") then
+						local display_id = convert_aerospace_display_id(as_monitor_id)
+						print(
+							"  space_name: "
+								.. space_name
+								.. " on as_monitor_id: "
+								.. as_monitor_id
+								.. " on display_id: "
+								.. display_id
+						)
+						space:set({ display = display_id })
+					end
+				end
+			)
+		end
+	end)
 end
 
 sbar.exec("aerospace list-workspaces --all", function(spaces)
@@ -216,6 +246,10 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			handle_aerospace_workspace_change(env, space, space_name, space_bracket)
 		end)
 
+		space:subscribe("aerospace_display_change", function(env)
+			handle_display_change(env, space, space_name)
+		end)
+
 		space:subscribe("mouse.clicked", function()
 			sbar.exec("aerospace workspace " .. space_name)
 		end)
@@ -228,6 +262,10 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 		space:subscribe("forced", function(env)
 			handle_space_windows_change(space, space_name)
 		end)
+
+		--space:subscribe("display_change", function(env)
+		--handle_display_change(env, space, space_name)
+		--end)
 
 		item_order = item_order .. " " .. space.name .. " " .. space_padding.name
 	end
