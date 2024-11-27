@@ -151,25 +151,43 @@ local function handle_space_windows_change(space, space_name)
 	end)
 end
 
-local function handle_aerospace_workspace_change(env, space, space_name, space_bracket)
-	local selected = env.FOCUSED_WORKSPACE == space_name
-	local prev_selected = env.PREV_WORKSPACE == space_name
+local function get_focused_workspace(env, callback)
+	print("get_focused_workspace")
+	local focused_workspace = env.FOCUSED_WORKSPACE
 
-	if not (selected or prev_selected) then
-		-- dont need to update
-		return
+	-- check if env has focused workspace, a bit quicker than running command
+	if focused_workspace and (focused_workspace ~= "") then
+		print("env had focused workspace, focused_workspace: " .. focused_workspace)
+		callback(focused_workspace)
+	else
+		print("env had no focused workspace, querying aerospace...")
+		sbar.exec("aerospace list-workspaces --focused", function(focused)
+			callback(focused:match("^%s*(.-)%s*$"))
+		end)
 	end
+end
 
-	space:set({
-		icon = { highlight = selected },
-		label = { highlight = selected },
-	})
+local function handle_aerospace_workspace_change(env, space, space_name, space_bracket)
+	get_focused_workspace(env, function(focused)
+		print("handle_aerospace_workspace_change space_name: " .. space_name .. " focused: " .. focused)
+		local is_selected = focused == space_name
+		local is_prev_selected = env.PREV_WORKSPACE == space_name
 
-	space_bracket:set({
-		background = { border_color = selected and colors.grey or colors.bg2 },
-	})
+		if not (is_selected or is_prev_selected) then
+			return -- dont need to update
+		end
 
-	handle_space_windows_change(space, space_name)
+		space:set({
+			icon = { highlight = is_selected },
+			label = { highlight = is_selected },
+		})
+
+		space_bracket:set({
+			background = { border_color = is_selected and colors.grey or colors.bg2 },
+		})
+
+		handle_space_windows_change(space, space_name)
+	end)
 end
 
 local function handle_display_change(space, space_name)
@@ -258,9 +276,10 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			sbar.exec("aerospace workspace " .. space_name)
 		end)
 
-		space:subscribe("forced", function()
+		space:subscribe("forced", function(env)
 			handle_space_windows_change(space, space_name)
 			handle_display_change(space, space_name)
+			handle_aerospace_workspace_change(env, space, space_name, space_bracket)
 		end)
 
 		item_order = item_order .. " " .. space.name .. " " .. space_padding.name
