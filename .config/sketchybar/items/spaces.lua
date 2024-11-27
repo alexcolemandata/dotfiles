@@ -172,7 +172,7 @@ local function handle_aerospace_workspace_change(env, space, space_name, space_b
 	handle_space_windows_change(space, space_name)
 end
 
-local function handle_display_change(env, space, space_name)
+local function handle_display_change(space, space_name)
 	print("handle_display_change, space_name: " .. space_name)
 
 	sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
@@ -250,17 +250,17 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			handle_display_change(env, space, space_name)
 		end)
 
-		space:subscribe("mouse.clicked", function()
-			sbar.exec("aerospace workspace " .. space_name)
-		end)
-
 		space:subscribe("space_windows_change", function()
 			handle_space_windows_change(space, space_name)
 		end)
 
-		-- not sure better way of going about this?
-		space:subscribe("forced", function(env)
+		space:subscribe("mouse.clicked", function()
+			sbar.exec("aerospace workspace " .. space_name)
+		end)
+
+		space:subscribe("forced", function()
 			handle_space_windows_change(space, space_name)
+			handle_display_change(space, space_name)
 		end)
 
 		item_order = item_order .. " " .. space.name .. " " .. space_padding.name
