@@ -12,7 +12,7 @@ after-login-command = [
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
     'exec-and-forget sketchybar',
-    'exec-and-forget borders active_color=0xff29d398 width=8.0',
+    'exec-and-forget borders',
     'exec-and-forget sleep 1 && sketchybar --update' # force sketchybar refresh after everything has been setup
 ]
 
