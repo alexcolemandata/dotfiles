@@ -137,7 +137,7 @@ local function handle_space_windows_change(space, space_name)
 		for app in windows:gmatch("[^\r\n]+") do
 			no_app = false
 			local lookup = app_icons[app]
-			local icon = ((lookup == nil) and app_icons["default"] or lookup)
+			local icon = ((lookup == nil) and app_icons["Default"] or lookup)
 			icon_line = icon_line .. " " .. icon
 		end
 
