@@ -22,9 +22,6 @@ local opts = {
 	defaults = {
 		lazy = true,
 	},
-	install = {
-		colorscheme = { "base16-horizon-terminal-dark" },
-	},
 	rtp = {
 		disabled_plugins = {
 			-- superceded by custom plugins
