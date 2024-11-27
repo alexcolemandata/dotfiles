@@ -14,17 +14,20 @@ vim.cmd([[
 ]])
 
 -- change cursor colours on mode switch
-local horizon = require("ac.horizon_colours")
+-- TODO: pull this from base16 directly + remove ac.horizon_colours
+local colors = require("ac.horizon_colours")
+
 local mode_colours = {
-	normal = horizon.orange,
-	insert = horizon.dark_blue,
-	terminal = horizon.green,
-	replace = horizon.dark_blue,
-	visual = horizon.pink,
-	visual_selected = horizon.dull_pink,
-	command = horizon.green,
+	normal = colors.orange,
+	insert = colors.dark_blue,
+	terminal = colors.green,
+	replace = colors.dark_blue,
+	visual = colors.pink,
+	visual_selected = colors.dull_pink,
+	command = colors.green,
 }
 
+-- dynamically changing colours based on mode
 vim.cmd(string.format(
 	[[
     augroup _cursor_dynamic_insert
@@ -78,4 +81,3 @@ vim.cmd(string.format(
 	mode_colours.command,
 	mode_colours.terminal
 ))
-
