@@ -77,6 +77,8 @@ outer.top =        [{ monitor."built-in" = 10 }, 48]
 outer.right =      18
 
 [workspace-to-monitor-force-assignment]
+# having 1/2 forced like this is how I map aerospace -> sketchybar
+# display ids
 1 = 'main'
 2 = ['secondary', 'main']
 
@@ -177,7 +179,10 @@ alt-equal = 'resize smart +200'
 
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
-alt-tab = 'workspace-back-and-forth'
+# forward/backwards through workspaces on display
+alt-tab = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace --wrap-around next'
+shift-alt-tab = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace --wrap-around prev'
+
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
 alt-b = 'move-workspace-to-monitor --wrap-around next'
 
