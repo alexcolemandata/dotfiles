@@ -129,7 +129,7 @@ end
 -- Call the initialization function
 init_display_mapping()
 
-local function handle_space_windows_change(space, space_name)
+local function handle_space_windows_change(space, space_name, is_selected)
 	print("handle_space_windows_change space_name: " .. space_name)
 	sbar.exec("aerospace list-windows --format %{app-name} --workspace " .. space_name, function(windows)
 		local no_app = true
@@ -145,8 +145,19 @@ local function handle_space_windows_change(space, space_name)
 			icon_line = " —"
 		end
 
+		local draw_app = (not no_app) or is_selected
+		print(
+			space_name
+				.. " draw_app="
+				.. tostring(draw_app)
+				.. " no_app="
+				.. tostring(no_app)
+				.. " is_selected="
+				.. tostring(is_selected)
+		)
+
 		sbar.animate("tanh", 10, function()
-			space:set({ label = icon_line })
+			space:set({ label = icon_line, drawing = draw_app })
 		end)
 	end)
 end
@@ -170,10 +181,11 @@ end
 local function handle_aerospace_workspace_change(env, space, space_name, space_bracket)
 	get_focused_workspace(env, function(focused)
 		print("handle_aerospace_workspace_change space_name: " .. space_name .. " focused: " .. focused)
-		local is_selected = focused == space_name
+		local is_selected = (focused == space_name)
 		local is_prev_selected = env.PREV_WORKSPACE == space_name
 
 		if not (is_selected or is_prev_selected) then
+			handle_space_windows_change(space, space_name, is_selected)
 			return -- dont need to update
 		end
 
@@ -186,7 +198,7 @@ local function handle_aerospace_workspace_change(env, space, space_name, space_b
 			background = { border_color = is_selected and colors.grey or colors.bg2 },
 		})
 
-		handle_space_windows_change(space, space_name)
+		handle_space_windows_change(space, space_name, is_selected)
 	end)
 end
 
@@ -201,14 +213,6 @@ local function handle_display_change(space, space_name)
 					-- Check if workspace is in the list
 					if workspaces:match("%f[%d]" .. space_name .. "%f[%D]") then
 						local display_id = convert_aerospace_display_id(as_monitor_id)
-						print(
-							"  space_name: "
-								.. space_name
-								.. " on as_monitor_id: "
-								.. as_monitor_id
-								.. " on display_id: "
-								.. display_id
-						)
 						space:set({ display = display_id })
 					end
 				end
@@ -220,6 +224,7 @@ end
 sbar.exec("aerospace list-workspaces --all", function(spaces)
 	for space_name in spaces:gmatch("[^\r\n]+") do
 		local space = sbar.add("item", "space." .. space_name, {
+			updates = true,
 			icon = {
 				font = { family = settings.font.numbers },
 				string = space_name,
@@ -260,7 +265,7 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			width = settings.group_paddings,
 		})
 
-		space:subscribe("aerospace_workspace_change", function(env)
+		space:subscribe({ "aerospace_workspace_change", "space_windows_change" }, function(env)
 			handle_aerospace_workspace_change(env, space, space_name, space_bracket)
 		end)
 
@@ -268,16 +273,11 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
 			handle_display_change(space, space_name)
 		end)
 
-		space:subscribe("space_windows_change", function()
-			handle_space_windows_change(space, space_name)
-		end)
-
 		space:subscribe("mouse.clicked", function()
 			sbar.exec("aerospace workspace " .. space_name)
 		end)
 
 		space:subscribe({ "forced", "power_source_change", "system_woke" }, function(env)
-			handle_space_windows_change(space, space_name)
 			handle_display_change(space, space_name)
 			handle_aerospace_workspace_change(env, space, space_name, space_bracket)
 		end)
