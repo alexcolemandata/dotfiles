@@ -51,44 +51,6 @@ eval $(thefuck --alias)
 eval $(thefuck --alias yikes) # PG version 
 
 
-# DOCKER
-# get environment variable from inside a container
-d_env () {
-    docker exec $1 printenv $2
-}
-alias de="d_env"
-
-# Enter into an interactive `bash` shell in the docker container
-d_shell () {
-    docker exec -it $1 /bin/bash
-}
-
-alias ds="d_shell"
-
-## LUIGI
-# get the mapped HOST_PORT from the container
-d_luigi_port () {
-    d_env $1 LUIGI_HOST_PORT
-}
-
-# runs the luigi module then opens the dashboard in firefox
-d_luigi_run () {
-    echo "$1  ::   running luigi --module $2 $3"
-
-    echo "opening dashboard in firefox"
-    open -a firefox -g "localhost:$(d_luigi_port $1)"
-
-    # run luigi for the given module
-    docker exec --env COLUMNS=${COLUMNS} $1 luigi --module $2 $3 --workers=8
-}
-
-## PYENV ALIASES
-
-alias pea='pyenv activate' # Py.Env.Activate
-alias pen='pyenv virtualenv' # Py.Env.New
-alias ped='pyenv virtualenv-delete' # Py.Env.Delete
-
-
 alias gs='git status'
 alias s='gs'
 
