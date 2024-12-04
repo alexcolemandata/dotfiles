@@ -1,4 +1,4 @@
-local base16_theme = os.getenv("THEME_BASE16") or "horizon-terminal-dark"
+local base16_theme = "horizon-terminal-dark"
 
 return {
 	"RRethy/nvim-base16",
