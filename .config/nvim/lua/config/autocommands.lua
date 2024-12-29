@@ -15,7 +15,7 @@ vim.cmd([[
 
 -- change cursor colours on mode switch
 -- TODO: pull this from base16 directly + remove ac.horizon_colours
-local colors = require("ac.horizon_colours")
+local colors = require("config.horizon_colours")
 
 local mode_colours = {
 	normal = colors.orange,
