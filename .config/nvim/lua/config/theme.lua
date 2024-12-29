@@ -10,10 +10,6 @@ local mode_colours = {
 	command = horizon.green,
 }
 
-local function theme(s)
-	local ok, _ = pcall(vim.cmd, "colorscheme " .. s)
-end
-
 -- customising theme
 vim.cmd("hi IndentBlankLineSpaceChar guifg=" .. horizon.grey)
 vim.cmd("hi IndentBlankLineSpaceCharBlankline guifg=" .. horizon.grey)
