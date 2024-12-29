@@ -9,7 +9,6 @@ return {
           "bash",
           "c", 
           "python",
-          "pip requirements",
           "sql",
           "lua", 
           -- data/misc
