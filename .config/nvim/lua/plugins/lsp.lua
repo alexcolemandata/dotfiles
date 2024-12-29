@@ -5,6 +5,7 @@ return {
       {
         "folke/lazydev.nvim",
         ft = "lua", -- only load on lua files
+        lazy = true,
         opts = {
           library = {
             -- See the configuration section for more details
@@ -15,9 +16,9 @@ return {
       },
     },
     config = function()
-      local lspconfig = require("lspconfig")
-      lspconfig.ruff.setup {} -- python
-      lspconfig.lua_ls.setup {}
+      local config = require("lspconfig")
+      config.lua_ls.setup {}
+      config.ruff.setup {}
     end,
   }
 }
