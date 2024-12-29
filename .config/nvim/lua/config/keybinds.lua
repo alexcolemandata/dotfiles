@@ -1,6 +1,6 @@
 local function keybind(mode, key, action)
-    -- convenience function
-    vim.api.nvim_set_keymap(mode, key, action, { noremap = true, silent = true })
+	-- convenience function
+	vim.api.nvim_set_keymap(mode, key, action, { noremap = true, silent = true })
 end
 
 -- mapping leader function
@@ -27,13 +27,12 @@ keybind("n", "<ESC>", ":noh<CR>")
 keybind("n", "<Tab>", ":bnext<CR>") -- next buffer
 keybind("n", "<S-Tab>", ":bprevious<CR>") -- prev buffer
 
-
 -- window splits
 keybind("n", "<leader>s", ":wincmd s<CR>") -- split horizontally
 keybind("n", "<leader>v", ":wincmd v<CR>") -- split vertically
 keybind("n", "<leader>=", ":wincmd =<CR>") -- even out splits
 keybind("n", "<leader>q", ":wincmd q<CR>") -- close window split
-keybind("n", "<C-w>", ":Bdelete<CR>")      -- close buffer, but keep window open
+keybind("n", "<C-w>", ":Bdelete<CR>") -- close buffer, but keep window open
 
 -- navigating window splits
 keybind("n", "<C-h>", ":wincmd h<CR>") -- focus left
@@ -55,3 +54,8 @@ keybind("x", "J", ":move '>+1<CR>gv-gv")
 keybind("x", "K", ":move '<-2<CR>gv-gv")
 keybind("x", "<C-j>", ":move '>+1<CR>gv-gv")
 keybind("x", "<C-k>", ":move '<-2<CR>gv-gv")
+
+-- sourcing/executing lua
+keybind("n", "<space><space>x", "<cmd>source %<CR>")
+keybind("n", "<space>x", ":.lua<CR>")
+keybind("v", "<space>x", ":lua<CR>")
