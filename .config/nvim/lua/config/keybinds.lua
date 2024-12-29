@@ -18,7 +18,7 @@ keybind("i", "<C-E>", "<C-O>A")
 keybind("i", "<C-V>", "<C-O>p")
 
 -- directory navigation
--- keybind("n", "<leader>e", ":NvimTreeFindFileToggle<CR>")
+keybind("n", "<leader>e", ":Explore<CR>")
 
 -- cancel search highlight with esc
 keybind("n", "<ESC>", ":noh<CR>")
