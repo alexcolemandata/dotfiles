@@ -18,7 +18,7 @@ vim.g.maplocalleader = "\\"
 
 local opts = {
 	defaults = {
-		lazy = true,
+		lazy = false,
 	},
 	rtp = {
 		disabled_plugins = {
