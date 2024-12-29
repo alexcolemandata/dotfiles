@@ -177,6 +177,8 @@ alt-m = ['layout floating tiling', 'mode main'] # Toggle between floating and ti
 alt-minus = 'resize smart -200'
 alt-equal = 'resize smart +200'
 
+alt-enter = 'layout horizontal vertical'
+
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 # forward/backwards through workspaces on display
