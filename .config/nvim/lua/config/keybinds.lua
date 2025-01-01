@@ -1,6 +1,6 @@
 local function keybind(mode, key, action)
-	-- convenience function
-	vim.api.nvim_set_keymap(mode, key, action, { noremap = true, silent = true })
+  -- convenience function
+  vim.api.nvim_set_keymap(mode, key, action, { noremap = true, silent = true })
 end
 
 -- mapping leader function
@@ -24,15 +24,14 @@ keybind("n", "<leader>e", ":Explore<CR>")
 keybind("n", "<ESC>", ":noh<CR>")
 
 -- tab to switch buffers in normal mode
-keybind("n", "<Tab>", ":bnext<CR>") -- next buffer
+keybind("n", "<Tab>", ":bnext<CR>")       -- next buffer
 keybind("n", "<S-Tab>", ":bprevious<CR>") -- prev buffer
 
 -- window splits
 keybind("n", "<leader>s", ":wincmd s<CR>") -- split horizontally
 keybind("n", "<leader>v", ":wincmd v<CR>") -- split vertically
 keybind("n", "<leader>=", ":wincmd =<CR>") -- even out splits
-keybind("n", "<leader>q", ":wincmd q<CR>") -- close window split
-keybind("n", "<C-w>", ":Bdelete<CR>") -- close buffer, but keep window open
+keybind("n", "<leader>q", ":close<CR>")    -- close window split
 
 -- navigating window splits
 keybind("n", "<C-h>", ":wincmd h<CR>") -- focus left
