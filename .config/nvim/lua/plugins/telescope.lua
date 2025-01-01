@@ -18,7 +18,7 @@ local config = function()
         hidden = true,
       },
       live_grep = {
-        theme = "dropdown",
+        theme = "ivy",
         previewer = true,
         hidden = true,
       },
