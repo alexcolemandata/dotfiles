@@ -1,4 +1,4 @@
-local keymap = vim.keymap
+local setkey = vim.keymap.set
 
 local config = function()
   local telescope = require('telescope')
@@ -18,7 +18,7 @@ local config = function()
         hidden = true,
       },
       live_grep = {
-        theme = "ivy",
+        theme = "dropdown",
         previewer = true,
         hidden = true,
       },
@@ -27,8 +27,33 @@ local config = function()
         previewer = true,
         hidden = true,
       }
+    },
+    extensions = {
+      fzf = {}
     }
   })
+
+  require("telescope").load_extension("fzf")
+
+  setkey("n", "<space>fh", require("telescope.builtin").help_tags)
+  setkey("n", "<space>ff", require("telescope.builtin").find_files)
+  setkey("n", "<space>fb", require("telescope.builtin").buffers)
+
+  -- find files in nvim config
+  setkey("n", "<space>en", function()
+    require("telescope.builtin").find_files {
+      cwd = vim.fn.stdpath("config")
+    }
+  end)
+
+  -- find nvim packages
+  setkey("n", "<space>ep", function()
+    require("telescope.builtin").find_files {
+      cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy")
+    }
+  end)
+
+  require "config.telescope.multigrep".setup()
 end
 
 return {
@@ -40,10 +65,4 @@ return {
     { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
   },
   config = config,
-  keys = {
-    keymap.set("n", "<leader>ff", ":Telescope find_files<CR>"),
-    keymap.set("n", "<leader>fa", ":Telescope <CR>"),
-    keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>"),
-    keymap.set("n", "<leader>fb", ":Telescope buffers<CR>"),
-  }
 }
