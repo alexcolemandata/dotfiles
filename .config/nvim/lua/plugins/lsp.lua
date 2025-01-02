@@ -14,12 +14,14 @@ return {
           },
         },
       },
+      { "saghen/blink.cmp" },
     },
     config = function()
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
       local config = require("lspconfig")
-      config.lua_ls.setup {}
-      config.ruff.setup {}
-      config.basedpyright.setup {}
+      config.lua_ls.setup { capabilities = capabilities }
+      config.ruff.setup { capabilities = capabilities }
+      config.basedpyright.setup { capabilities = capabilities }
 
       -- run auto-formatting on save
       vim.api.nvim_create_autocmd("LspAttach", {

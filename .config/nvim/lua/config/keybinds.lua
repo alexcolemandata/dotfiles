@@ -58,3 +58,17 @@ keybind("x", "<C-k>", ":move '<-2<CR>gv-gv")
 keybind("n", "<space><space>x", "<cmd>source %<CR>")
 keybind("n", "<space>x", ":.lua<CR>")
 keybind("v", "<space>x", ":lua<CR>")
+
+
+-- oil - TODO: set this up in oil config
+vim.keymap.set("n", "<space><backspace>", "<cmd>Oil<CR>")
+
+-- quickfix list
+vim.keymap.set("n", "<C-u>", "<cmd>cnext<CR>")
+vim.keymap.set("n", "<C-i>", "<cmd>cprev<CR>")
+
+-- LSP - these will be default keybinds in a future version
+vim.keymap.set("n", "grn", vim.lsp.buf.rename)
+vim.keymap.set("n", "gra", vim.lsp.buf.code_action)
+vim.keymap.set("n", "grr", vim.lsp.buf.references)
+vim.keymap.set("n", "<C-s>", vim.lsp.buf.signature_help)
