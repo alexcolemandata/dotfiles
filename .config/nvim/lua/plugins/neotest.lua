@@ -9,8 +9,8 @@ return {
   },
   config = function()
     local neotest = require("neotest")
+    ---@diagnostic disable-next-line: missing-fields
     neotest.setup({
-      discovery = { enabled = false, },
       adapters = {
         require("neotest-python")({
           runner = "pytest",
