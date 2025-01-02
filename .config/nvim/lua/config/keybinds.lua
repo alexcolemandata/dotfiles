@@ -34,10 +34,12 @@ keybind("n", "<leader>=", ":wincmd =<CR>") -- even out splits
 keybind("n", "<leader>q", ":close<CR>")    -- close window split
 
 -- navigating window splits
-keybind("n", "<C-h>", ":wincmd h<CR>") -- focus left
-keybind("n", "<C-l>", ":wincmd l<CR>") -- focus right
-keybind("n", "<C-k>", ":wincmd k<CR>") -- focus up
-keybind("n", "<C-j>", ":wincmd j<CR>") -- focus down
+-- replaced by vim-tmux-navigator
+--keybind("n", "<C-h>", ":wincmd h<CR>") -- focus left
+--keybind("n", "<C-l>", ":wincmd l<CR>") -- focus right
+--keybind("n", "<C-k>", ":wincmd k<CR>") -- focus up
+--keybind("n", "<C-j>", ":wincmd j<CR>") -- focus down
+
 
 -- maintain visual selection after changing indent
 keybind("v", "<", "<gv")
