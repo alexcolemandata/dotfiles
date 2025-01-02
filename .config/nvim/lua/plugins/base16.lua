@@ -1,4 +1,4 @@
-local base16_theme = "horizon-terminal-dark"
+local base16_theme = "da-one-sea"
 
 return {
 	"RRethy/nvim-base16",

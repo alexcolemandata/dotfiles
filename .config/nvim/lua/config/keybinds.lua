@@ -17,9 +17,6 @@ keybind("i", "<C-E>", "<C-O>A")
 -- paste in insert mode
 keybind("i", "<C-V>", "<C-O>p")
 
--- directory navigation
-keybind("n", "<leader>e", ":Explore<CR>")
-
 -- cancel search highlight with esc
 keybind("n", "<ESC>", ":noh<CR>")
 
@@ -63,7 +60,7 @@ keybind("v", "<space>x", ":lua<CR>")
 
 
 -- oil - TODO: set this up in oil config
-vim.keymap.set("n", "<space><backspace>", "<cmd>Oil<CR>")
+vim.keymap.set("n", "<space>e", "<cmd>Oil<CR>")
 
 -- quickfix list
 vim.keymap.set("n", "<C-u>", "<cmd>cnext<CR>")
