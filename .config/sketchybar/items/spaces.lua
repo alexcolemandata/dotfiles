@@ -156,7 +156,7 @@ local function handle_space_windows_change(space, space_name, is_selected)
       .. tostring(is_selected)
     )
 
-    sbar.animate("tanh", 10, function()
+    sbar.animate("tanh", 60, function()
       space:set({ label = icon_line, drawing = draw_app })
     end)
   end)
