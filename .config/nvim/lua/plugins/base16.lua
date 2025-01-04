@@ -1,4 +1,4 @@
-local base16_theme = "darkmoss"
+local base16_theme = "kanagawa"
 
 return {
 	"RRethy/nvim-base16",

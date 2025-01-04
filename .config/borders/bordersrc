@@ -4,8 +4,8 @@ options=(
     style=round
     width=6.0
     hidpi=on
-    active_color=0xff499180
-    inactive_color=0xa0252c2d
+    active_color=0xff76946a
+    inactive_color=0xa01f1f28
     order=above # helps with maxos shadows drawing over borders
 )
 
