@@ -39,6 +39,7 @@ return {
             })
           end
         end,
+        desc = "Run formatting on save",
       })
     end,
   }
