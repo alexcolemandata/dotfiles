@@ -41,7 +41,7 @@ local volume_bracket = sbar.add("bracket", "widgets.volume.bracket", {
   volume_icon.name,
   volume_percent.name
 }, {
-  background = { color = colors.bg1 },
+  background = { color = colors.bg0 },
   popup = { align = "center" }
 })
 
@@ -59,12 +59,12 @@ local volume_slider = sbar.add("slider", popup_width, {
       corner_radius = 3,
       color = colors.bg2,
     },
-    knob= {
+    knob = {
       string = "􀀁",
       drawing = true,
     },
   },
-  background = { color = colors.bg1, height = 2, y_offset = -20 },
+  background = { color = colors.bg0, height = 2, y_offset = -20 },
   click_script = 'osascript -e "set volume output volume $PERCENTAGE"'
 })
 
@@ -125,7 +125,10 @@ local function volume_toggle_details(env)
             width = popup_width,
             align = "center",
             label = { string = device, color = color },
-            click_script = 'SwitchAudioSource -s "' .. device .. '" && sketchybar --set /volume.device\\.*/ label.color=' .. colors.grey .. ' --set $NAME label.color=' .. colors.white
+            click_script = 'SwitchAudioSource -s "' ..
+                device ..
+                '" && sketchybar --set /volume.device\\.*/ label.color=' ..
+                colors.grey .. ' --set $NAME label.color=' .. colors.white
 
           })
           counter = counter + 1
@@ -149,4 +152,3 @@ volume_icon:subscribe("mouse.scrolled", volume_scroll)
 volume_percent:subscribe("mouse.clicked", volume_toggle_details)
 volume_percent:subscribe("mouse.exited.global", volume_collapse_details)
 volume_percent:subscribe("mouse.scrolled", volume_scroll)
-
