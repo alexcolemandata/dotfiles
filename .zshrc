@@ -82,8 +82,13 @@ alias repos="cd $dir_repos"
 change_repo () {
     cd $dir_repos/$1
 }
-
 alias cr="change_repo"
+
+# open .config
+change_to_dotconfig () {
+    cd $HOME/.config/$1
+}
+alias cfig="change_to_dotconfig"
 
 # VI-Mode
 bindkey -v
