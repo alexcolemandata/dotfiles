@@ -1,30 +1,30 @@
-
-local horizon = require("config.horizon_colours")
-
-local base_bg = horizon.dark_grey
-local base_inactive_fg = horizon.grey
-local base_active_primary_fg = horizon.darker_grey
-local base_active_secondary_fg = horizon.lightest_grey
-
-local buffer_opts = {
-  "buffers",
-  show_filename_only = false,
-  icons_enabled = false,
-  --max_length = vim.o.columns * 4 / 5,
-  mode = 0,
-  buffers_color = {
-    active = { fg = horizon.blue, gui='bold'}
-  },
-  symbols = {
-    modified = ' ●',      -- Text to show when the buffer is modified
-    alternate_file = '', -- Text to show to identify the alternate file
-    directory = '',     -- Text to show when the buffer is a directory
-  },
-  section_separators = { left = '', right = ''},
-  component_separators = { left = '', right = ''},
-}
-
 local config = function()
+  local mode_colors = require("config.theme").mode_colours
+  local colors = require("base16-colorscheme").colors
+
+  local base_bg = colors.base00
+  local base_inactive_fg = colors.base01
+  local base_active_primary_fg = colors.base02
+  local base_active_secondary_fg = colors.base03
+
+  local buffer_opts = {
+    "buffers",
+    show_filename_only = false,
+    icons_enabled = false,
+    --max_length = vim.o.columns * 4 / 5,
+    mode = 0,
+    buffers_color = {
+      active = { fg = colors.base0A, gui = 'bold' }
+    },
+    symbols = {
+      modified = ' ●', -- Text to show when the buffer is modified
+      alternate_file = '', -- Text to show to identify the alternate file
+      directory = '', -- Text to show when the buffer is a directory
+    },
+    section_separators = { left = '', right = '' },
+    component_separators = { left = '', right = '' },
+  }
+
   local theme = function()
     return {
       inactive = {
@@ -33,32 +33,32 @@ local config = function()
         c = { fg = base_inactive_fg, bg = base_bg },
       },
       terminal = {
-        a = { fg = base_active_primary_fg, bg = horizon.green, gui = "bold" },
+        a = { fg = base_active_primary_fg, bg = mode_colors.terminal, gui = "bold" },
         b = { fg = base_active_secondary_fg, bg = base_bg },
         c = { fg = base_active_secondary_fg, bg = base_bg },
       },
       visual = {
-        a = { fg = base_active_primary_fg, bg = horizon.pink, gui = "bold" },
+        a = { fg = base_active_primary_fg, bg = mode_colors.visual, gui = "bold" },
         b = { fg = base_active_secondary_fg, bg = base_bg },
         c = { fg = base_active_secondary_fg, bg = base_bg },
       },
       replace = {
-        a = { fg = base_active_primary_fg, bg = horizon.dark_blue, gui = "bold" },
+        a = { fg = base_active_primary_fg, bg = mode_colors.replace, gui = "bold" },
         b = { fg = base_active_secondary_fg, bg = base_bg },
         c = { fg = base_active_secondary_fg, bg = base_bg },
       },
       normal = {
-        a = { fg = base_active_primary_fg, bg = horizon.orange, gui = "bold" },
+        a = { fg = base_active_primary_fg, bg = mode_colors.normal, gui = "bold" },
         b = { fg = base_active_secondary_fg, bg = base_bg },
         c = { fg = base_active_secondary_fg, bg = base_bg },
       },
       insert = {
-        a = { fg = base_active_primary_fg, bg = horizon.dark_blue, gui = "bold" },
+        a = { fg = base_active_primary_fg, bg = mode_colors.insert, gui = "bold" },
         b = { fg = base_active_secondary_fg, bg = base_bg },
         c = { fg = base_active_secondary_fg, bg = base_bg },
       },
       command = {
-        a = { fg = base_active_primary_fg, bg = horizon.green, gui = "bold" },
+        a = { fg = base_active_primary_fg, bg = mode_colors.command, gui = "bold" },
         b = { fg = base_active_secondary_fg, bg = base_bg },
         c = { fg = base_active_secondary_fg, bg = base_bg },
       },
@@ -92,6 +92,9 @@ end
 
 return {
   "nvim-lualine/lualine.nvim",
+  dependencies = {
+    "RRethy/nvim-base16"
+  },
   lazy = false,
   config = config,
 }
