@@ -72,8 +72,8 @@ preset = 'qwerty'
 inner.horizontal = 18
 inner.vertical =   18
 outer.left =       18
-outer.bottom =     8
-outer.top =        [{ monitor."built-in" = 10 }, 48]
+outer.bottom =     18
+outer.top =        [{ monitor."built-in" = 14 }, 36]
 outer.right =      18
 
 [workspace-to-monitor-force-assignment]
