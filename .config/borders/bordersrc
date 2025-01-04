@@ -5,7 +5,7 @@ options=(
     width=8.0
     hidpi=on
     active_color=0xff76946a
-    inactive_color=0xa01f1f28
+    inactive_color=0xff1f1f28
     order=above # helps with maxos shadows drawing over borders
 )
 
