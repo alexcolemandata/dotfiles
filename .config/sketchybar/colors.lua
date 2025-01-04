@@ -49,7 +49,7 @@ M.bar = {
 
 M.popup = {
   bg = M.named_base.bg_lighter,
-  border = M.named_base.fg_default
+  border = M.named_base.strings,
 }
 
 M.with_alpha = function(color, alpha)
