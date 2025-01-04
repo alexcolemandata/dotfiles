@@ -195,7 +195,7 @@ local function handle_aerospace_workspace_change(env, space, space_name, space_b
     })
 
     space_bracket:set({
-      background = { border_color = is_selected and colors.green or colors.bg2 },
+      background = { border_color = is_selected and colors.named_base.strings or colors.named_base.bg_lighter },
     })
 
     handle_space_windows_change(space, space_name, is_selected)
@@ -230,30 +230,30 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
         string = space_name,
         padding_left = 7,
         padding_right = 3,
-        color = colors.white,
-        highlight_color = colors.red,
+        color = colors.named_base.fg_default,
+        highlight_color = colors.named_base.variables,
       },
       label = {
         padding_right = 12,
-        color = colors.grey,
-        highlight_color = colors.white,
+        color = colors.named_base.comments,
+        highlight_color = colors.named_base.fg_default,
         font = "sketchybar-app-font:Regular:16.0",
         y_offset = -1,
       },
       padding_right = 1,
       padding_left = 1,
       background = {
-        color = colors.bg1,
+        color = colors.named_base.bg_lighter,
         border_width = 1,
         height = 22,
-        border_color = colors.black,
+        border_color = colors.named_base.bg_lighter,
       },
     })
 
     local space_bracket = sbar.add("bracket", { space.name }, {
       background = {
         color = colors.transparent,
-        border_color = colors.bg2,
+        border_color = colors.named_base.fg_dark,
         height = 24,
         border_width = 1,
       },

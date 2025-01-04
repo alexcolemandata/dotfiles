@@ -21,7 +21,7 @@ local volume_icon = sbar.add("item", "widgets.volume2", {
     string = icons.volume._100,
     width = 0,
     align = "left",
-    color = colors.grey,
+    color = colors.named_base.fg_default,
     font = {
       style = settings.font.style_map["Regular"],
       size = 14.0,
@@ -41,7 +41,7 @@ local volume_bracket = sbar.add("bracket", "widgets.volume.bracket", {
   volume_icon.name,
   volume_percent.name
 }, {
-  background = { color = colors.bg0 },
+  background = { color = colors.named_base.bg_default },
   popup = { align = "center" }
 })
 
@@ -53,18 +53,18 @@ sbar.add("item", "widgets.volume.padding", {
 local volume_slider = sbar.add("slider", popup_width, {
   position = "popup." .. volume_bracket.name,
   slider = {
-    highlight_color = colors.blue,
+    highlight_color = colors.named_base.functions,
     background = {
       height = 6,
       corner_radius = 3,
-      color = colors.bg2,
+      color = colors.named_base.bg_lighter,
     },
     knob = {
       string = "􀀁",
       drawing = true,
     },
   },
-  background = { color = colors.bg0, height = 2, y_offset = -20 },
+  background = { color = colors.named_base.bg_default, height = 2, y_offset = -20 },
   click_script = 'osascript -e "set volume output volume $PERCENTAGE"'
 })
 
@@ -112,13 +112,12 @@ local function volume_toggle_details(env)
       current_audio_device = result:sub(1, -2)
       sbar.exec("SwitchAudioSource -a -t output", function(available)
         current = current_audio_device
-        local color = colors.grey
         local counter = 0
 
         for device in string.gmatch(available, '[^\r\n]+') do
-          local color = colors.grey
+          local color = colors.named_base.fg_dark
           if current == device then
-            color = colors.white
+            color = colors.named_base.fg_default
           end
           sbar.add("item", "volume.device." .. counter, {
             position = "popup." .. volume_bracket.name,
@@ -128,7 +127,7 @@ local function volume_toggle_details(env)
             click_script = 'SwitchAudioSource -s "' ..
                 device ..
                 '" && sketchybar --set /volume.device\\.*/ label.color=' ..
-                colors.grey .. ' --set $NAME label.color=' .. colors.white
+                colors.named_base.fg_default .. ' --set $NAME label.color=' .. colors.named_base.fg_default
 
           })
           counter = counter + 1

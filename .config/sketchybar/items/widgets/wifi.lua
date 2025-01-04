@@ -5,7 +5,7 @@ local settings = require("settings")
 -- Execute the event provider binary which provides the event "network_update"
 -- for the network interface "en0", which is fired every 2.0 seconds.
 sbar.exec(
-"killall network_load >/dev/null; $CONFIG_DIR/helpers/event_providers/network_load/bin/network_load en0 network_update 2.0")
+  "killall network_load >/dev/null; $CONFIG_DIR/helpers/event_providers/network_load/bin/network_load en0 network_update 2.0")
 
 local popup_width = 250
 
@@ -27,7 +27,7 @@ local wifi_up = sbar.add("item", "widgets.wifi1", {
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
-    color = colors.red,
+    color = colors.named_base.variables,
     string = "??? Bps",
   },
   y_offset = 4,
@@ -50,7 +50,7 @@ local wifi_down = sbar.add("item", "widgets.wifi2", {
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
-    color = colors.blue,
+    color = colors.named_base.strings,
     string = "??? Bps",
   },
   y_offset = -4,
@@ -67,7 +67,7 @@ local wifi_bracket = sbar.add("bracket", "widgets.wifi.bracket", {
   wifi_up.name,
   wifi_down.name
 }, {
-  background = { color = colors.bg0 },
+  background = { color = colors.named_base.bg_default },
   popup = { align = "center", height = 30 }
 })
 
@@ -91,7 +91,7 @@ local ssid = sbar.add("item", {
   },
   background = {
     height = 2,
-    color = colors.grey,
+    color = colors.named_base.bg_light,
     y_offset = -15
   }
 })
@@ -156,8 +156,8 @@ local router = sbar.add("item", {
 sbar.add("item", { position = "right", width = settings.group_paddings })
 
 wifi_up:subscribe("network_update", function(env)
-  local up_color = (env.upload == "000 Bps") and colors.grey or colors.red
-  local down_color = (env.download == "000 Bps") and colors.grey or colors.blue
+  local up_color = (env.upload == "000 Bps") and colors.named_base.fg_dark or colors.named_base.variables
+  local down_color = (env.download == "000 Bps") and colors.named_base.fg_dark or colors.named_base.strings
   wifi_up:set({
     icon = { color = up_color },
     label = {
@@ -180,7 +180,7 @@ wifi:subscribe({ "wifi_change", "system_woke" }, function(env)
     wifi:set({
       icon = {
         string = connected and icons.wifi.connected or icons.wifi.disconnected,
-        color = connected and colors.white or colors.red,
+        color = connected and colors.named_base.fg_default or colors.named_base.fg_dark,
       },
     })
   end)
