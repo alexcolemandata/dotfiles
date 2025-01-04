@@ -184,10 +184,11 @@ local function handle_aerospace_workspace_change(env, space, space_name, space_b
     local is_selected = (focused == space_name)
     local is_prev_selected = env.PREV_WORKSPACE == space_name
 
-    if not (is_selected or is_prev_selected) then
-      handle_space_windows_change(space, space_name, is_selected)
-      return -- dont need to update
-    end
+    -- TODO: might need this?
+    -- if not (is_selected or is_prev_selected) then
+    -- handle_space_windows_change(space, space_name, is_selected)
+    -- return -- dont need to update
+    -- end
 
     space:set({
       icon = { highlight = is_selected },
@@ -243,7 +244,7 @@ sbar.exec("aerospace list-workspaces --all", function(spaces)
       padding_right = 1,
       padding_left = 1,
       background = {
-        color = colors.named_base.bg_lighter,
+        color = colors.named_base.bg_default,
         border_width = 1,
         height = 22,
         border_color = colors.named_base.bg_lighter,
