@@ -92,6 +92,7 @@ end
 
 return {
   "nvim-lualine/lualine.nvim",
+  enabled = false,
   dependencies = {
     "RRethy/nvim-base16"
   },
