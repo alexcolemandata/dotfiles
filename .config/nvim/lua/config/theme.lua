@@ -23,7 +23,6 @@ vim.cmd("hi! link netrwMarkFile MatchParen")
 vim.cmd("hi Visual guibg=" .. mode_colours.visual_selected)
 
 vim.cmd("hi CursorLineNr guifg=" .. mode_colours.normal)
---vim.cmd("hi ColorColumn guibg=#4a2c33")
 vim.cmd("hi ColorColumn guibg=" .. colors.base01)
 
 M.mode_colours = mode_colours
