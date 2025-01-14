@@ -135,6 +135,14 @@ alt-i = 'workspace 2'
 alt-o = 'workspace 3'
 alt-p = 'workspace 4'
 
+alt-y = 'workspace-back-and-forth'
+
+# change display focus
+alt-a = 'focus-monitor --wrap-around left'
+alt-s = 'focus-monitor --wrap-around down'
+alt-d = 'focus-monitor --wrap-around up'
+alt-f = 'focus-monitor --wrap-around right'
+
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 ctrl-alt-u = 'move-node-to-workspace 1 --focus-follows-window'
 ctrl-alt-i = 'move-node-to-workspace 2 --focus-follows-window'
@@ -186,7 +194,7 @@ alt-tab = 'exec-and-forget aerospace list-workspaces --monitor focused --empty n
 shift-alt-tab = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace --wrap-around prev'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-alt-b = 'move-workspace-to-monitor --wrap-around next'
+ctrl-alt-b = 'move-workspace-to-monitor --wrap-around next'
 
 ctrl-alt-r = 'reload-config'
 ctrl-alt-z = ['flatten-workspace-tree', 'mode main'] # reset layout
