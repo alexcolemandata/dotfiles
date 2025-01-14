@@ -1,22 +1,22 @@
 local M = {}
 
 M.base = {
-  base00 = 0xff1f1f28,
-  base01 = 0xff16161d,
-  base02 = 0xff223249,
-  base03 = 0xff54546d,
-  base04 = 0xff727169,
-  base05 = 0xffdcd7ba,
-  base06 = 0xffc8c093,
-  base07 = 0xff717c7c,
-  base08 = 0xffc34043,
-  base09 = 0xffffa066,
-  base0A = 0xffc0a36e,
-  base0B = 0xff76946a,
-  base0C = 0xff6a9589,
-  base0D = 0xff7e9cd8,
-  base0E = 0xff957fb8,
-  base0F = 0xffd27e99,
+  base00 = 0xff171e1f,
+  base01 = 0xff252c2d,
+  base02 = 0xff373c3d,
+  base03 = 0xff555e5f,
+  base04 = 0xff818f80,
+  base05 = 0xffc7c7a5,
+  base06 = 0xffe3e3c8,
+  base07 = 0xffe1eaef,
+  base08 = 0xffff4658,
+  base09 = 0xffe6db74,
+  base0A = 0xfffdb11f,
+  base0B = 0xff499180,
+  base0C = 0xff66d9ef,
+  base0D = 0xff498091,
+  base0E = 0xff9bc0c8,
+  base0F = 0xffd27b53,
 }
 
 M.named_base = {

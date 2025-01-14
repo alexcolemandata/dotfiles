@@ -2,10 +2,10 @@
 
 options=(
     style=square
-    width=8.0
+    width=10.0
     hidpi=on
-    active_color=0xff76946a
-    inactive_color=0xff1f1f28
+    active_color=0xff499180
+    inactive_color=0xff171e1f
     order=above # helps with maxos shadows drawing over borders
 )
 
