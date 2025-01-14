@@ -1,8 +1,8 @@
 local M = {}
 
 M.base = {
-  base00 = 0xff171e1f,
-  base01 = 0xff252c2d,
+  base00 = 0xd0171e1f,
+  base01 = 0xd0252c2d,
   base02 = 0xff373c3d,
   base03 = 0xff555e5f,
   base04 = 0xff818f80,
