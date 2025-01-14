@@ -5,284 +5,219 @@ local app_icons = require("helpers.app_icons")
 
 local item_order = ""
 
--- Global table to map aerospace_id to display_id
-local aerospace_to_display_map = {}
-
--- Constants for main and secondary aerospace IDs
-local main_aerospace_id = nil
-local secondary_aerospace_id = nil
-
--- Function to get the main aerospace ID
-local function get_main_aerospace_id(callback)
-  sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
-    for aerospace_monitor_id in monitors:gmatch("[^\r\n]+") do
-      sbar.exec(
-        "aerospace list-workspaces --format %{workspace} --monitor " .. aerospace_monitor_id,
-        function(workspaces)
-          -- Check if workspace '1' is in the list
-          if workspaces:match("%f[%d]1%f[%D]") then
-            callback(aerospace_monitor_id)
-          end
-        end
-      )
-    end
-  end)
-end
-
--- Function to get the secondary aerospace ID
-local function get_secondary_aerospace_id(callback)
-  sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
-    for aerospace_monitor_id in monitors:gmatch("[^\r\n]+") do
-      sbar.exec(
-        "aerospace list-workspaces --format %{workspace} --monitor " .. aerospace_monitor_id,
-        function(workspaces)
-          -- Check if workspace '2' is in the list
-          if workspaces:match("%f[%d]2%f[%D]") then
-            callback(aerospace_monitor_id)
-          end
-        end
-      )
-    end
-  end)
-end
-
-local function get_num_displays(callback)
-  sbar.exec("aerospace list-monitors --count", function(monitor_count)
-    -- Trim whitespace from the result
-    local trimmed_count = monitor_count:match("^%s*(.-)%s*$") -- Removes leading and trailing whitespace
-    -- Use the callback to pass back the trimmed result
-    callback(trimmed_count)
-  end)
-end
-
--- Function to initialize the display mapping
-local function init_display_mapping()
-  -- Get the number of displays
-  get_num_displays(function(num_displays)
-    num_displays = tonumber(num_displays) -- Convert string to number
-    if num_displays == 1 then
-      -- Only 1 display, trivial mapping
-      main_aerospace_id = 1
-      aerospace_to_display_map[main_aerospace_id] = 1
-      print("Mapping initialized for 1 display:", aerospace_to_display_map)
-      return
-    end
-
-    -- Get the main aerospace ID
-    get_main_aerospace_id(function(main_id)
-      main_aerospace_id = main_id
-      aerospace_to_display_map[main_aerospace_id] = 1
-
-      -- Get the secondary aerospace ID
-      get_secondary_aerospace_id(function(secondary_id)
-        secondary_aerospace_id = secondary_id
-        aerospace_to_display_map[secondary_aerospace_id] = 2
-
-        -- Handle additional displays (if num_displays > 2)
-        if num_displays > 2 then
-          sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
-            for aerospace_monitor_id in monitors:gmatch("[^\r\n]+") do
-              if
-                  aerospace_monitor_id ~= main_aerospace_id
-                  and aerospace_monitor_id ~= secondary_aerospace_id
-              then
-                aerospace_to_display_map[aerospace_monitor_id] = 3
-              end
-            end
-
-            -- Print the mapping for debugging
-            print("Mapping initialized for multiple displays:")
-            for aerospace_id, display_id in pairs(aerospace_to_display_map) do
-              print("Aerospace ID:", aerospace_id, "-> Display ID:", display_id)
-            end
-          end)
-        else
-          -- Print the mapping for debugging (if only 2 displays)
-          print("Mapping initialized for 2 displays:")
-          for aerospace_id, display_id in pairs(aerospace_to_display_map) do
-            print("Aerospace ID:", aerospace_id, "-> Display ID:", display_id)
-          end
-        end
-      end)
-    end)
-  end)
-end
-
-local function get_aerospace_id_from_display_id(display_id)
-  for aerospace_id, mapped_display_id in pairs(aerospace_to_display_map) do
-    if mapped_display_id == display_id then
-      return aerospace_id
+local function is_line_in_lines(lines, line)
+  for lines_line in lines:gmatch("[^\r\n]+") do
+    if line == lines_line then
+      return true
     end
   end
-  return nil -- Return nil if no match is found
+  return false
 end
 
-local function convert_aerospace_display_id(aerospace_display_id)
-  -- if aerospace_display_id is in the mapping, return the mapping, otherwise 1
-  if aerospace_to_display_map[aerospace_display_id] then
-    return aerospace_to_display_map[aerospace_display_id]
-  else
-    return 1
+local function split(input, delimiter)
+  local result = {}
+  for match in (input .. delimiter):gmatch("(.-)" .. delimiter) do
+    table.insert(result, match)
   end
+  return result
 end
 
--- Call the initialization function
-init_display_mapping()
+function trim(s)
+  return (s:match("^%s*(.-)%s*$"))
+end
 
-local function handle_space_windows_change(space, space_name, is_selected)
-  print("handle_space_windows_change space_name: " .. space_name)
+local function get_iconline_for_space(space, callback)
+  local space_name = space.as_name
   sbar.exec("aerospace list-windows --format %{app-name} --workspace " .. space_name, function(windows)
-    local no_app = true
     local icon_line = ""
     for app in windows:gmatch("[^\r\n]+") do
-      no_app = false
       local lookup = app_icons[app]
       local icon = ((lookup == nil) and app_icons["Default"] or lookup)
       icon_line = icon_line .. " " .. icon
     end
 
-    if no_app then
+    callback(icon_line)
+  end)
+end
+
+local function refresh_space_windows(space, is_focused)
+  local space_name = space.as_name
+  get_iconline_for_space(space, function(icon_line)
+    local no_app = icon_line == ""
+    local draw_app = (not no_app) or is_focused
+
+    if icon_line == "" then
       icon_line = " —"
     end
 
-    local draw_app = (not no_app) or is_selected
-    print(
-      space_name
-      .. " draw_app="
-      .. tostring(draw_app)
-      .. " no_app="
-      .. tostring(no_app)
-      .. " is_selected="
-      .. tostring(is_selected)
-    )
-
-    sbar.animate("tanh", 60, function()
-      space:set({ label = icon_line, drawing = draw_app })
+    sbar.animate("tanh", 20, function()
+      space:set({ label = icon_line, drawing = draw_app or (space_name == "1") })
     end)
   end)
 end
 
-local function get_focused_workspace(env, callback)
-  print("get_focused_workspace")
-  local focused_workspace = env.FOCUSED_WORKSPACE
-
-  -- check if env has focused workspace, a bit quicker than running command
-  if focused_workspace and (focused_workspace ~= "") then
-    print("env had focused workspace, focused_workspace: " .. focused_workspace)
+local function query_focused_workspace(callback)
+  sbar.exec("aerospace list-workspaces --format %{workspace} --focused", function(focused_workspace)
+    focused_workspace = trim(focused_workspace)
     callback(focused_workspace)
-  else
-    print("env had no focused workspace, querying aerospace...")
-    sbar.exec("aerospace list-workspaces --focused", function(focused)
-      callback(focused:match("^%s*(.-)%s*$"))
-    end)
+  end)
+end
+
+
+function print_table(tbl, indent)
+  indent = indent or 0
+  local prefix = string.rep("  ", indent)
+
+  for key, value in pairs(tbl) do
+    if type(value) == "table" then
+      print(prefix .. tostring(key) .. " = {")
+      print_table(value, indent + 1)
+      print(prefix .. "}")
+    else
+      print(prefix .. tostring(key) .. " = " .. tostring(value))
+    end
   end
 end
 
-local function handle_aerospace_workspace_change(env, space, space_name, space_bracket)
-  get_focused_workspace(env, function(focused)
-    print("handle_aerospace_workspace_change space_name: " .. space_name .. " focused: " .. focused)
-    local is_selected = (focused == space_name)
-    local is_prev_selected = env.PREV_WORKSPACE == space_name
+local function set_space_focus(space, is_focused)
+  space:set({
+    icon = { highlight = is_focused },
+    label = { highlight = is_focused },
+  })
 
-    -- TODO: might need this?
-    -- if not (is_selected or is_prev_selected) then
-    -- handle_space_windows_change(space, space_name, is_selected)
-    -- return -- dont need to update
-    -- end
-
-    space:set({
-      icon = { highlight = is_selected },
-      label = { highlight = is_selected },
-    })
-
-    space_bracket:set({
-      background = { border_color = is_selected and colors.named_base.strings or colors.named_base.bg_lighter },
-    })
-
-    handle_space_windows_change(space, space_name, is_selected)
-  end)
+  space.bracket:set({
+    background = { border_color = is_focused and colors.named_base.strings or colors.named_base.bg_lighter },
+  })
 end
 
-local function handle_display_change(space, space_name)
-  print("handle_display_change, space_name: " .. space_name)
+local function set_space_display(space, display_id)
+  print("set_space_display(space.as_name=" .. space.as_name .. ", display_id='" .. display_id .. "')")
+  space:set({ display = display_id })
+  space.bracket:set({ display = display_id })
+  space.padding:set({ display = display_id })
+end
 
-  sbar.exec("aerospace list-monitors --format %{monitor-id}", function(monitors)
-    for as_monitor_id in monitors:gmatch("[^\r\n]+") do
-      sbar.exec(
-        "aerospace list-workspaces --format %{workspace} --monitor " .. as_monitor_id,
-        function(workspaces)
-          -- Check if workspace is in the list
-          if workspaces:match("%f[%d]" .. space_name .. "%f[%D]") then
-            local display_id = convert_aerospace_display_id(as_monitor_id)
-            space:set({ display = display_id })
-          end
-        end
-      )
+local function init_space(space_name, display_id, is_focused, is_empty)
+  print("initializing space: " .. space_name .. " for display_id: " .. display_id)
+  local draw_space = (space_name == "1") or not is_empty
+  local space = sbar.add("item", "space." .. space_name, {
+    updates = true,
+    drawing = draw_space,
+    icon = {
+      font = { family = settings.font.numbers },
+      string = space_name,
+      padding_left = 7,
+      padding_right = 3,
+      color = colors.named_base.fg_default,
+      highlight_color = colors.named_base.variables,
+      highlight = false,
+    },
+    label = {
+      padding_right = 12,
+      color = colors.named_base.comments,
+      highlight_color = colors.named_base.fg_default,
+      font = "sketchybar-app-font:Regular:16.0",
+      y_offset = -1,
+      highlight = false,
+    },
+    padding_right = 1,
+    padding_left = 1,
+    background = {
+      color = colors.named_base.bg_default,
+      border_width = 1,
+      height = 22,
+      border_color = colors.named_base.bg_lighter,
+    },
+  })
+  space.as_name = space_name
+
+  local space_bracket = sbar.add("bracket", { space.name }, {
+    drawing = draw_space,
+    background = {
+      color = colors.transparent,
+      border_color = colors.named_base.fg_dark,
+      height = 24,
+      border_width = 1,
+    },
+  })
+  space.bracket = space_bracket
+
+  local space_padding = sbar.add("item", "space.padding." .. space_name, {
+    script = "",
+    width = settings.group_paddings,
+    drawing = draw_space,
+  })
+  space.padding = space_padding
+
+  set_space_display(space, display_id)
+  refresh_space_windows(space, is_focused)
+  set_space_focus(space, is_focused)
+
+  space:subscribe({ "space_windows_change" }, function(env)
+    query_focused_workspace(function(focused)
+      if space.as_name == focused then
+        print("handle_space_windows_change: space.name" .. space.name)
+        refresh_space_windows(space, true)
+      end
+    end)
+  end)
+
+  space:subscribe({ "aerospace_workspace_change" }, function(env)
+    is_focused = env.FOCUSED_WORKSPACE == space_name
+    local env_prev_focused = env.PREV_WORKSPACE == space_name
+
+    if (is_focused or env_prev_focused) then
+      print("aerospace_workspace_change, space.as_name=" .. space.as_name)
+      set_space_focus(space, is_focused)
+      refresh_space_windows(space, is_focused)
     end
   end)
+
+  space:subscribe({ "aerospace_display_change" }, function(env)
+    print("handle_display_change, space_name: " .. space_name)
+    sbar.exec(
+      "aerospace list-workspaces --all --format %{workspace}';'%{monitor-appkit-nsscreen-screens-id}",
+      function(space_monitor_ids)
+        for space_monitor_id in space_monitor_ids:gmatch("[^\r\n]+") do
+          parts = split(space_monitor_id, ";")
+          if parts[1] == space_name then
+            set_space_display(space, parts[2])
+          end
+        end
+        print("\n\n")
+      end)
+  end)
+
+  space:subscribe("mouse.clicked", function()
+    sbar.exec("aerospace workspace " .. space_name)
+  end)
+
+  return space
 end
 
-sbar.exec("aerospace list-workspaces --all", function(spaces)
-  for space_name in spaces:gmatch("[^\r\n]+") do
-    local space = sbar.add("item", "space." .. space_name, {
-      updates = true,
-      icon = {
-        font = { family = settings.font.numbers },
-        string = space_name,
-        padding_left = 7,
-        padding_right = 3,
-        color = colors.named_base.fg_default,
-        highlight_color = colors.named_base.variables,
-      },
-      label = {
-        padding_right = 12,
-        color = colors.named_base.comments,
-        highlight_color = colors.named_base.fg_default,
-        font = "sketchybar-app-font:Regular:16.0",
-        y_offset = -1,
-      },
-      padding_right = 1,
-      padding_left = 1,
-      background = {
-        color = colors.named_base.bg_default,
-        border_width = 1,
-        height = 22,
-        border_color = colors.named_base.bg_lighter,
-      },
-    })
 
-    local space_bracket = sbar.add("bracket", { space.name }, {
-      background = {
-        color = colors.transparent,
-        border_color = colors.named_base.fg_dark,
-        height = 24,
-        border_width = 1,
-      },
-    })
+sbar.exec("aerospace list-monitors --format %{monitor-id}';'%{monitor-appkit-nsscreen-screens-id}",
+  function(all_monitor_ids)
+    query_focused_workspace(function(focused_space)
+      for monitor_ids in all_monitor_ids:gmatch("[^\r\n]+") do
+        local id_parts = split(trim(monitor_ids), ";")
+        local as_monitor_id = id_parts[1]
+        local sb_display_id = id_parts[2]
 
-    -- Padding space
-    local space_padding = sbar.add("item", "space.padding." .. space_name, {
-      script = "",
-      width = settings.group_paddings,
-    })
+        sbar.exec("aerospace list-workspaces --monitor " .. as_monitor_id .. " --empty",
+          function(empty_spaces)
+            sbar.exec("aerospace list-workspaces --monitor " .. as_monitor_id, function(space_names)
+              for space_name in space_names:gmatch("[^\r\n]+") do
+                local is_focused = space_name == focused_space
+                local is_empty = is_line_in_lines(empty_spaces, space_name)
+                local space = init_space(space_name, sb_display_id, is_focused, is_empty)
 
-    space:subscribe({ "aerospace_workspace_change", "space_windows_change" }, function(env)
-      handle_aerospace_workspace_change(env, space, space_name, space_bracket)
-    end)
-
-    space:subscribe({ "aerospace_display_change", "display_change" }, function(env)
-      handle_display_change(space, space_name)
-    end)
-
-    space:subscribe("mouse.clicked", function()
-      sbar.exec("aerospace workspace " .. space_name)
-    end)
-
-    space:subscribe({ "forced", "power_source_change", "system_woke" }, function(env)
-      handle_display_change(space, space_name)
-      handle_aerospace_workspace_change(env, space, space_name, space_bracket)
-    end)
-
-    item_order = item_order .. " " .. space.name .. " " .. space_padding.name
+                item_order = item_order .. " " .. space.name .. " " .. space.padding.name
+              end
+            end)
+          end)
+      end
+    end
+    )
   end
-end)
+)
