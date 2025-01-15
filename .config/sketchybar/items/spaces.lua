@@ -1,3 +1,4 @@
+local sbar = require("sketchybar")
 local colors = require("colors")
 local icons = require("icons")
 local settings = require("settings")
@@ -26,11 +27,15 @@ function trim(s)
   return (s:match("^%s*(.-)%s*$"))
 end
 
+local function lines_to_table(lines)
+  return lines:gmatch("[^\r\n]+")
+end
+
 local function get_iconline_for_space(space, callback)
   local space_name = space.as_name
   sbar.exec("aerospace list-windows --format %{app-name} --workspace " .. space_name, function(windows)
     local icon_line = ""
-    for app in windows:gmatch("[^\r\n]+") do
+    for app in lines_to_table(windows) do
       local lookup = app_icons[app]
       local icon = ((lookup == nil) and app_icons["Default"] or lookup)
       icon_line = icon_line .. " " .. icon
@@ -40,21 +45,6 @@ local function get_iconline_for_space(space, callback)
   end)
 end
 
-local function refresh_space_windows(space, is_focused)
-  local space_name = space.as_name
-  get_iconline_for_space(space, function(icon_line)
-    local no_app = icon_line == ""
-    local draw_app = (not no_app) or is_focused
-
-    if icon_line == "" then
-      icon_line = " —"
-    end
-
-    sbar.animate("tanh", 20, function()
-      space:set({ label = icon_line, drawing = draw_app or (space_name == "1") })
-    end)
-  end)
-end
 
 local function query_focused_workspace(callback)
   sbar.exec("aerospace list-workspaces --format %{workspace} --focused", function(focused_workspace)
@@ -80,29 +70,49 @@ function print_table(tbl, indent)
 end
 
 local function set_space_focus(space, is_focused)
+  local label = space:query().label.value
+  local is_empty = label == " —"
+  local draw_space = is_focused or not is_empty or (space.as_name == "1")
+
+  if space:query().drawing == draw_space then
+    return
+  end
+
   space:set({
+    drawing = draw_space,
     icon = { highlight = is_focused },
     label = { highlight = is_focused },
   })
-
   space.bracket:set({
+    drawing = draw_space,
     background = { border_color = is_focused and colors.named_base.strings or colors.named_base.bg_lighter },
   })
+  space.padding:set({ drawing = draw_space })
+end
+
+local function refresh_space_windows(space, is_focused)
+  get_iconline_for_space(space, function(icon_line)
+    if icon_line == "" then
+      icon_line = " —"
+    end
+
+    sbar.animate("tanh", 20, function()
+      space:set({ label = icon_line })
+      set_space_focus(space, is_focused)
+    end)
+  end)
 end
 
 local function set_space_display(space, display_id)
-  print("set_space_display(space.as_name=" .. space.as_name .. ", display_id='" .. display_id .. "')")
   space:set({ display = display_id })
   space.bracket:set({ display = display_id })
   space.padding:set({ display = display_id })
 end
 
-local function init_space(space_name, display_id, is_focused, is_empty)
-  print("initializing space: " .. space_name .. " for display_id: " .. display_id)
-  local draw_space = (space_name == "1") or not is_empty
+local function init_space(space_name, display_id, is_focused)
   local space = sbar.add("item", "space." .. space_name, {
     updates = true,
-    drawing = draw_space,
+    drawing = false,
     icon = {
       font = { family = settings.font.numbers },
       string = space_name,
@@ -132,7 +142,7 @@ local function init_space(space_name, display_id, is_focused, is_empty)
   space.as_name = space_name
 
   local space_bracket = sbar.add("bracket", { space.name }, {
-    drawing = draw_space,
+    drawing = false,
     background = {
       color = colors.transparent,
       border_color = colors.named_base.fg_dark,
@@ -145,18 +155,16 @@ local function init_space(space_name, display_id, is_focused, is_empty)
   local space_padding = sbar.add("item", "space.padding." .. space_name, {
     script = "",
     width = settings.group_paddings,
-    drawing = draw_space,
+    drawing = false,
   })
   space.padding = space_padding
 
   set_space_display(space, display_id)
   refresh_space_windows(space, is_focused)
-  set_space_focus(space, is_focused)
 
   space:subscribe({ "space_windows_change" }, function(env)
     query_focused_workspace(function(focused)
       if space.as_name == focused then
-        print("handle_space_windows_change: space.name" .. space.name)
         refresh_space_windows(space, true)
       end
     end)
@@ -167,24 +175,20 @@ local function init_space(space_name, display_id, is_focused, is_empty)
     local env_prev_focused = env.PREV_WORKSPACE == space_name
 
     if (is_focused or env_prev_focused) then
-      print("aerospace_workspace_change, space.as_name=" .. space.as_name)
-      set_space_focus(space, is_focused)
       refresh_space_windows(space, is_focused)
     end
   end)
 
   space:subscribe({ "aerospace_display_change" }, function(env)
-    print("handle_display_change, space_name: " .. space_name)
     sbar.exec(
       "aerospace list-workspaces --all --format %{workspace}';'%{monitor-appkit-nsscreen-screens-id}",
       function(space_monitor_ids)
-        for space_monitor_id in space_monitor_ids:gmatch("[^\r\n]+") do
+        for space_monitor_id in lines_to_table(space_monitor_ids) do
           parts = split(space_monitor_id, ";")
           if parts[1] == space_name then
             set_space_display(space, parts[2])
           end
         end
-        print("\n\n")
       end)
   end)
 
@@ -195,29 +199,17 @@ local function init_space(space_name, display_id, is_focused, is_empty)
   return space
 end
 
+query_focused_workspace(function(focused)
+  sbar.exec("aerospace list-workspaces --all --format %{workspace}';'%{monitor-appkit-nsscreen-screens-id}",
+    function(space_monitor_ids)
+      for space_monitor_id in lines_to_table(space_monitor_ids) do
+        local parts = split(space_monitor_id, ";")
+        local space_name = parts[1]
+        local display_id = parts[2]
+        local is_focused = space_name == focused
 
-sbar.exec("aerospace list-monitors --format %{monitor-id}';'%{monitor-appkit-nsscreen-screens-id}",
-  function(all_monitor_ids)
-    query_focused_workspace(function(focused_space)
-      for monitor_ids in all_monitor_ids:gmatch("[^\r\n]+") do
-        local id_parts = split(trim(monitor_ids), ";")
-        local as_monitor_id = id_parts[1]
-        local sb_display_id = id_parts[2]
-
-        sbar.exec("aerospace list-workspaces --monitor " .. as_monitor_id .. " --empty",
-          function(empty_spaces)
-            sbar.exec("aerospace list-workspaces --monitor " .. as_monitor_id, function(space_names)
-              for space_name in space_names:gmatch("[^\r\n]+") do
-                local is_focused = space_name == focused_space
-                local is_empty = is_line_in_lines(empty_spaces, space_name)
-                local space = init_space(space_name, sb_display_id, is_focused, is_empty)
-
-                item_order = item_order .. " " .. space.name .. " " .. space.padding.name
-              end
-            end)
-          end)
+        init_space(space_name, display_id, is_focused)
       end
     end
-    )
-  end
-)
+  )
+end)
