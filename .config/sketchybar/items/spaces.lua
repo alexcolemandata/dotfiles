@@ -1,19 +1,7 @@
 local sbar = require("sketchybar")
 local colors = require("colors")
-local icons = require("icons")
 local settings = require("settings")
 local app_icons = require("helpers.app_icons")
-
-local item_order = ""
-
-local function is_line_in_lines(lines, line)
-  for lines_line in lines:gmatch("[^\r\n]+") do
-    if line == lines_line then
-      return true
-    end
-  end
-  return false
-end
 
 local function split(input, delimiter)
   local result = {}
@@ -53,21 +41,6 @@ local function query_focused_workspace(callback)
   end)
 end
 
-
-function print_table(tbl, indent)
-  indent = indent or 0
-  local prefix = string.rep("  ", indent)
-
-  for key, value in pairs(tbl) do
-    if type(value) == "table" then
-      print(prefix .. tostring(key) .. " = {")
-      print_table(value, indent + 1)
-      print(prefix .. "}")
-    else
-      print(prefix .. tostring(key) .. " = " .. tostring(value))
-    end
-  end
-end
 
 local function set_space_focus(space, is_focused)
   local label = space:query().label.value
