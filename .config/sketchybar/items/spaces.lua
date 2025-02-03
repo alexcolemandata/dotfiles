@@ -79,15 +79,12 @@ local function set_space_focus(space, is_focused)
   end
 
   space:set({
-    drawing = draw_space,
     icon = { highlight = is_focused },
     label = { highlight = is_focused },
   })
   space.bracket:set({
-    drawing = draw_space,
     background = { border_color = is_focused and colors.named_base.strings or colors.named_base.bg_lighter },
   })
-  space.padding:set({ drawing = draw_space })
 end
 
 local function refresh_space_windows(space, is_focused)
@@ -112,7 +109,7 @@ end
 local function init_space(space_name, display_id, is_focused)
   local space = sbar.add("item", "space." .. space_name, {
     updates = true,
-    drawing = false,
+    drawing = true,
     icon = {
       font = { family = settings.font.numbers },
       string = space_name,
@@ -142,7 +139,7 @@ local function init_space(space_name, display_id, is_focused)
   space.as_name = space_name
 
   local space_bracket = sbar.add("bracket", { space.name }, {
-    drawing = false,
+    drawing = true,
     background = {
       color = colors.transparent,
       border_color = colors.named_base.fg_dark,
@@ -155,7 +152,7 @@ local function init_space(space_name, display_id, is_focused)
   local space_padding = sbar.add("item", "space.padding." .. space_name, {
     script = "",
     width = settings.group_paddings,
-    drawing = false,
+    drawing = true,
   })
   space.padding = space_padding
 
