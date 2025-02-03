@@ -61,6 +61,10 @@ automatically-unhide-macos-hidden-apps = true
 [key-mapping]
 preset = 'qwerty'
 
+[workspace-to-monitor-force-assignment]
+1 = 'main'
+2 = 'main'
+3 = ['secondary', 'main']
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
 # - Constant:     gaps.outer.top = 8
@@ -75,6 +79,7 @@ outer.left =       18
 outer.bottom =     18
 outer.top =        [{ monitor."built-in" = 14 }, 48]
 outer.right =      18
+
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -129,7 +134,7 @@ alt-i = 'workspace 2'
 alt-o = 'workspace 3'
 alt-p = 'workspace 4'
 
-alt-y = 'workspace-back-and-forth'
+alt-y = 'focus-monitor --wrap-around next'
 
 # change display focus
 alt-a = 'focus-monitor --wrap-around left'
@@ -181,3 +186,4 @@ ctrl-alt-b = 'move-workspace-to-monitor --wrap-around next'
 ctrl-alt-r = 'reload-config'
 ctrl-alt-z = ['flatten-workspace-tree', 'mode main'] # reset layout
 ctrl-alt-backspace = ['close-all-windows-but-current', 'mode main']
+
