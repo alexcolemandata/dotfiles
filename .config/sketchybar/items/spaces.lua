@@ -113,13 +113,13 @@ local function get_workspace_table(callback)
     end)
 end
 
-local function set_space_focus(space, is_focused, is_visible)
-  if (space.is_focused == is_focused) and (space.is_visible == is_visible) then
+local function set_space_focus(space, is_focused)
+  if (space.is_focused == is_focused) then
     return
   end
 
   space:set({
-    icon = { highlight = is_visible or is_focused },
+    icon = { highlight = is_focused },
     label = { highlight = is_focused },
   })
   space.bracket:set({
@@ -127,7 +127,6 @@ local function set_space_focus(space, is_focused, is_visible)
   })
 
   space.is_focused = is_focused
-  space.is_visible = is_visible
 end
 
 local function set_space_screen_id(space, screen_id)
@@ -171,7 +170,6 @@ local function init_space(space_name, space_data)
   local is_focused = space_data["is_focused"]
   local windows = space_data["windows"]
   local screen_id = space_data["screen_id"]
-  local is_visible = space_data["is_visible"]
   local space = sbar.add("item", "space." .. space_name, {
     updates = true,
     drawing = true,
@@ -220,7 +218,7 @@ local function init_space(space_name, space_data)
   })
   space.padding = space_padding
 
-  set_space_focus(space, is_focused, is_visible)
+  set_space_focus(space, is_focused)
   set_space_screen_id(space, screen_id)
   set_space_windows(space, windows)
 
@@ -240,12 +238,10 @@ local function space_info_from_workspace_table(workspace_table)
     local space_name = window_data["workspace"]
     local window_name = window_data["app-name"]
     local is_focused = space_name == focused
-    local is_visible = contains(visible, space_name)
     if not space_info[space_name] then
       space_info[space_name] = {}
       space_info[space_name]["windows"] = {}
       space_info[space_name]["is_focused"] = space_name == focused
-      space_info[space_name]["is_visible"] = is_visible
       space_info[space_name]["screen_id"] = window_data["monitor-appkit-nsscreen-screens-id"]
     end
     table.insert(space_info[space_name]["windows"], window_name)
@@ -262,11 +258,10 @@ local function refresh_spaces(counter, spaces, callback)
       local space_info = space_info_from_workspace_table(workspace_table)
       for space_name, space in pairs(spaces) do
         local is_focused = space_info[space_name].is_focused
-        local is_visible = space_info[space_name].is_visible
         local screen_id = space_info[space_name].screen_id
         local windows = space_info[space_name].windows
 
-        set_space_focus(space, is_focused, is_visible)
+        set_space_focus(space, is_focused)
         set_space_screen_id(space, screen_id)
         set_space_windows(space, windows)
 
@@ -300,7 +295,6 @@ local function init_space_manager(workspace_table)
 
   space_manager:subscribe({
     "space_windows_change",
-    "aerospace_workspace_change",
     "aerospace_display_change" }, function()
     event_counter = event_counter + 1
     refresh_spaces(event_counter, spaces, function(updated)
@@ -309,6 +303,21 @@ local function init_space_manager(workspace_table)
       end
     end
     )
+  end)
+
+  space_manager:subscribe({
+    "aerospace_workspace_change",
+  }, function(env)
+    print("env: ")
+    print_table(env)
+    event_counter = event_counter + 1
+    for space_name, space in pairs(spaces) do
+      if space_name == env.PREV_WORKSPACE then
+        set_space_focus(space, false)
+      elseif space_name == env.FOCUSED_WORKSPACE then
+        set_space_focus(space, true)
+      end
+    end
   end)
 end
 
