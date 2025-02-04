@@ -276,6 +276,7 @@ local function init_space_manager(workspace_table)
   local space_manager = sbar.add("item", "space_manager", {
     drawing = false,
     updates = true,
+    update_freq = 6,
   })
   local event_counter = EVENT_COUNTER
 
@@ -294,7 +295,11 @@ local function init_space_manager(workspace_table)
   end
 
   space_manager:subscribe({
-    "space_windows_change",
+    "routine", "forced", "system_woke", "space_windows_change" }, function(env)
+    refresh_spaces(event_counter, spaces, function() end)
+  end)
+
+  space_manager:subscribe({
     "aerospace_display_change" }, function()
     event_counter = event_counter + 1
     refresh_spaces(event_counter, spaces, function(updated)
@@ -308,8 +313,6 @@ local function init_space_manager(workspace_table)
   space_manager:subscribe({
     "aerospace_workspace_change",
   }, function(env)
-    print("env: ")
-    print_table(env)
     event_counter = event_counter + 1
     for space_name, space in pairs(spaces) do
       if space_name == env.PREV_WORKSPACE then
