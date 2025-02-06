@@ -113,6 +113,8 @@ precmd() { vcs_info }
 zstyle ':vcs_info:git:*' formats '%F{magenta}%r%f %F{green}%b%f '
 zstyle ':vcs_info:*' enable git
 
+# fuzzy finder
+source <(fzf --zsh)
 
 # note - powerlevel 10k is apparently quite quick!
 export PROMPT='
