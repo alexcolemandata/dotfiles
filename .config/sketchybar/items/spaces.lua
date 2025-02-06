@@ -43,6 +43,7 @@ end
 
 
 local function exec_and_log(cmd, callback)
+  print(cmd)
   sbar.exec(cmd, function(result)
     callback(result)
   end)
@@ -68,53 +69,33 @@ local function get_monitors(callback)
   )
 end
 
-local function get_visible_spaces(monitors, callback)
-  local screen_ids = {}
-  for _, monitor in ipairs(monitors) do
-    table.insert(screen_ids, monitor["monitor-appkit-nsscreen-screens-id"])
-  end
-
-  local screen_id_str = table.concat(screen_ids, " ")
-  local cmd =
-      "echo " .. screen_id_str ..
-      " | xargs -n1 -I{} " ..
-      "aerospace list-workspaces --visible --monitor {} " ..
-      "| tr \"\\n\" \",\" "
-
-  exec_and_log(cmd, function(visible_spaces)
-    local visible = {}
-    for _, space_name in ipairs(split(visible_spaces, ",")) do
-      space_name = trim(space_name)
-      if space_name ~= "" then
-        table.insert(visible, space_name)
-      end
-    end
-
-    callback(visible)
-  end)
+local function get_workspaces(callback)
+  exec_and_log(
+    "aerospace list-workspaces --all --format %{workspace}%{monitor-appkit-nsscreen-screens-id} --json",
+    callback
+  )
 end
 
 local function get_workspace_table(callback)
-  get_windows(
-    function(windows)
+  get_workspaces(function(workspaces)
+    get_windows(function(windows)
       get_focused_workspace(function(focused_space)
         get_monitors(function(monitors)
-          get_visible_spaces(monitors, function(visible)
-            local workspace_table = {}
-            workspace_table["focused"] = trim(focused_space)
-            workspace_table["windows"] = windows
-            workspace_table["monitors"] = monitors
-            workspace_table["visible"] = visible
+          local workspace_table = {}
+          workspace_table["focused"] = trim(focused_space)
+          workspace_table["windows"] = windows
+          workspace_table["monitors"] = monitors
+          workspace_table["workspaces"] = workspaces
 
-            callback(workspace_table)
-          end)
+          callback(workspace_table)
         end)
       end)
     end)
+  end)
 end
 
-local function set_space_focus(space, is_focused)
-  if (space.is_focused == is_focused) then
+local function set_space_focus(space, is_focused, forced)
+  if (space.is_focused == is_focused) and not forced then
     return
   end
 
@@ -167,6 +148,8 @@ end
 
 
 local function init_space(space_name, space_data)
+  print("init_space: " .. space_name)
+  print_table(space_data)
   local is_focused = space_data["is_focused"]
   local windows = space_data["windows"]
   local screen_id = space_data["screen_id"]
@@ -217,8 +200,9 @@ local function init_space(space_name, space_data)
     drawing = true,
   })
   space.padding = space_padding
+  space.is_focused = is_focused
 
-  set_space_focus(space, is_focused)
+  set_space_focus(space, is_focused, true)
   set_space_screen_id(space, screen_id)
   set_space_windows(space, windows)
 
@@ -232,20 +216,23 @@ end
 local function space_info_from_workspace_table(workspace_table)
   local focused = workspace_table["focused"]
   local visible = workspace_table["visible"]
+  local workspaces = workspace_table["workspaces"]
   local space_info = {}
+
+  for _, workspace_info in ipairs(workspaces) do
+    local space_name = workspace_info["workspace"]
+    space_info[space_name] = {}
+    space_info[space_name]["is_focused"] = space_name == focused
+    space_info[space_name]["screen_id"] = workspace_info["monitor-appkit-nsscreen-screens-id"]
+    space_info[space_name]["windows"] = {}
+  end
 
   for _, window_data in ipairs(workspace_table["windows"]) do
     local space_name = window_data["workspace"]
     local window_name = window_data["app-name"]
-    local is_focused = space_name == focused
-    if not space_info[space_name] then
-      space_info[space_name] = {}
-      space_info[space_name]["windows"] = {}
-      space_info[space_name]["is_focused"] = space_name == focused
-      space_info[space_name]["screen_id"] = window_data["monitor-appkit-nsscreen-screens-id"]
-    end
     table.insert(space_info[space_name]["windows"], window_name)
   end
+
 
   return space_info
 end
@@ -265,7 +252,11 @@ local function refresh_spaces(counter, spaces, callback)
         set_space_screen_id(space, screen_id)
         set_space_windows(space, windows)
 
-        EVENT_COUNTER = EVENT_COUNTER + 1
+        if EVENT_COUNTER >= 1000 then
+          EVENT_COUNTER = 0
+        else
+          EVENT_COUNTER = EVENT_COUNTER + 1
+        end
         callback(EVENT_COUNTER)
       end
     end)
@@ -276,7 +267,6 @@ local function init_space_manager(workspace_table)
   local space_manager = sbar.add("item", "space_manager", {
     drawing = false,
     updates = true,
-    update_freq = 6,
   })
   local event_counter = EVENT_COUNTER
 
@@ -296,7 +286,7 @@ local function init_space_manager(workspace_table)
 
   space_manager:subscribe({
     "routine", "forced", "system_woke", "space_windows_change" }, function(env)
-    refresh_spaces(event_counter, spaces, function() end)
+    refresh_spaces(0, spaces, function() end)
   end)
 
   space_manager:subscribe({
