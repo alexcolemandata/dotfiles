@@ -18,6 +18,10 @@ local function print_table(tbl, indent)
       print(prefix .. tostring(key) .. " = " .. tostring(value))
     end
   end
+
+  if indent == 0 then
+    print("\n\n")
+  end
 end
 
 function contains(list, element)
@@ -54,6 +58,7 @@ local function get_focused_workspace(callback)
     callback(trim(focused))
   end)
 end
+
 
 local function get_windows(callback)
   exec_and_log(
@@ -99,28 +104,52 @@ local function get_visible_workspaces(monitors, callback)
 end
 
 local function get_workspace_table(callback)
-  get_workspaces(function(workspaces)
-    get_windows(function(windows)
-      get_focused_workspace(function(focused_space)
-        get_monitors(function(monitors)
-          get_visible_workspaces(monitors, function(visible)
-            local workspace_table = {}
-            workspace_table["focused"] = trim(focused_space)
-            workspace_table["windows"] = windows
-            workspace_table["monitors"] = monitors
-            workspace_table["workspaces"] = workspaces
-            workspace_table["visible"] = visible
+  local co = coroutine.create(function()
+    local workspaces = coroutine.yield(get_workspaces)
+    local windows = coroutine.yield(get_windows)
+    local focused_space = coroutine.yield(get_focused_workspace)
+    local monitors = coroutine.yield(get_monitors)
+    local visible = coroutine.yield(get_visible_workspaces, monitors)
 
-            callback(workspace_table)
-          end)
-        end)
-      end)
-    end)
+    local workspace_table = {
+      focused = trim(focused_space),
+      windows = windows,
+      monitors = monitors,
+      workspaces = workspaces,
+      visible = visible
+    }
+
+    callback(workspace_table)
   end)
+
+  local function resume_co(...)
+    local success, next_fn, arg = coroutine.resume(co, ...)
+
+    if not success then
+      print("Coroutine error: ", next_fn)
+      return
+    end
+
+    if coroutine.status(co) == "dead" then
+      return
+    end
+
+    if arg ~= nil then
+      next_fn(arg, function(result)
+        resume_co(result)
+      end)
+    else
+      next_fn(function(result)
+        resume_co(result)
+      end)
+    end
+  end
+
+  resume_co()
 end
 
-local function set_space_focus(space, is_focused, forced)
-  if (space.is_focused == is_focused) and not forced then
+local function set_space_focus(space, is_focused, is_visible, forced)
+  if (space.is_focused == is_focused) and (space.visible == is_visible) and not forced then
     return
   end
 
@@ -129,10 +158,11 @@ local function set_space_focus(space, is_focused, forced)
     label = { highlight = is_focused },
   })
   space.bracket:set({
-    background = { border_color = is_focused and colors.named_base.strings or colors.named_base.bg_lighter },
+    background = { border_color = (is_focused or is_visible) and colors.named_base.strings or colors.named_base.bg_lighter },
   })
 
   space.is_focused = is_focused
+  space.is_visible = is_visible
 end
 
 local function set_space_screen_id(space, screen_id)
@@ -228,7 +258,7 @@ local function init_space(space_name, space_data)
   space.is_focused = is_focused
   space.is_visible = is_visible
 
-  set_space_focus(space, is_focused, true)
+  set_space_focus(space, is_focused, is_visible, true)
   set_space_screen_id(space, screen_id)
   set_space_windows(space, windows)
 
@@ -274,8 +304,9 @@ local function refresh_spaces(counter, spaces, callback)
         local is_focused = space_info[space_name].is_focused
         local screen_id = space_info[space_name].screen_id
         local windows = space_info[space_name].windows
+        local is_visible = space_info[space_name].is_visible
 
-        set_space_focus(space, is_focused)
+        set_space_focus(space, is_focused, is_visible)
         set_space_screen_id(space, screen_id)
         set_space_windows(space, windows)
 
