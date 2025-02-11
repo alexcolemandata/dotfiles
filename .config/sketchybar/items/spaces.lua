@@ -385,6 +385,13 @@ local function init_space_manager(workspace_table)
       end
     end)
   end)
+
+  event_counter = event_counter + 1
+  refresh_spaces(event_counter, spaces, function(updated)
+    if updated then
+      event_counter = updated
+    end
+  end)
 end
 
 get_workspace_table(function(workspace_table)
