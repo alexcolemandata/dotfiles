@@ -155,15 +155,30 @@ local function set_space_focus(space, is_focused, is_visible, forced)
     return
   end
 
-  print("space_name: ", space.name, "is_focused: ", tostring(is_focused), "is_visible: ", tostring(is_visible),
-    "forced: ", tostring(forced))
-  print_table(space)
+  local app_line = space:query().label.value
+  local border_colour
+  if is_focused or is_visible then
+    border_colour = colors.named_base.strings
+  elseif app_line ~= "" then
+    border_colour = colors.named_base.bg_lighter
+  else
+    border_colour = colors.named_base.bg_default
+  end
+
+  local icon_colour
+  if app_line ~= "" then
+    icon_colour = colors.named_base.fg_default
+  else
+    icon_colour = colors.named_base.bg_lighter
+  end
+
   space:set({
-    icon = { highlight = is_focused },
+    icon = { highlight = is_focused, color = icon_colour },
     label = { highlight = is_focused },
   })
-  space.bracket:set({
-    background = { border_color = (is_focused or is_visible) and colors.named_base.strings or colors.named_base.bg_lighter },
+
+  space:set({
+    background = { border_color = border_colour },
   })
 
   space.is_focused = is_focused
@@ -176,7 +191,6 @@ local function set_space_screen_id(space, screen_id)
   end
 
   space:set({ display = screen_id })
-  space.bracket:set({ display = screen_id })
   space.padding:set({ display = screen_id })
   space.screen_id = screen_id
 end
@@ -190,7 +204,8 @@ local function icon_line_from_windows(windows)
   end
 
   if icon_line == "" then
-    icon_line = " —"
+    --icon_line = " —"
+    icon_line = icon_line
   end
 
   return icon_line
@@ -236,23 +251,12 @@ local function init_space(space_name, space_data)
     padding_right = 1,
     padding_left = 1,
     background = {
-      color = colors.named_base.bg_default,
-      border_width = 1,
-      height = 22,
-      border_color = colors.named_base.bg_lighter,
-    },
-  })
-
-  local space_bracket = sbar.add("bracket", { space.name }, {
-    drawing = true,
-    background = {
       color = colors.transparent,
-      border_color = colors.named_base.fg_dark,
-      height = 24,
       border_width = 1,
+      height = 28,
+      border_color = colors.transparent,
     },
   })
-  space.bracket = space_bracket
 
   local space_padding = sbar.add("item", "space.padding." .. space_name, {
     script = "",
