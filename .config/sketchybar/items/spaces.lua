@@ -149,10 +149,15 @@ local function get_workspace_table(callback)
 end
 
 local function set_space_focus(space, is_focused, is_visible, forced)
-  if (space.is_focused == is_focused) and (space.visible == is_visible) and not forced then
+  is_focused = (is_focused == nil) and space.is_focused or is_focused
+  is_visible = (is_visible == nil) and space.is_visible or is_visible
+  if not forced and (space.is_focused == is_focused) and (space.visible == is_visible) then
     return
   end
 
+  print("space_name: ", space.name, "is_focused: ", tostring(is_focused), "is_visible: ", tostring(is_visible),
+    "forced: ", tostring(forced))
+  print_table(space)
   space:set({
     icon = { highlight = is_focused },
     label = { highlight = is_focused },
@@ -368,6 +373,13 @@ local function init_space_manager(workspace_table)
         set_space_focus(space, true)
       end
     end
+
+    event_counter = event_counter + 1
+    refresh_spaces(event_counter, spaces, function(updated)
+      if updated then
+        event_counter = updated
+      end
+    end)
   end)
 end
 
